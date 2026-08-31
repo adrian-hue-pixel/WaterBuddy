@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="200" height="260" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="gDrop" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#9ef0ff" />
+      <stop offset="60%" stop-color="#6de9ff" />
+      <stop offset="100%" stop-color="#5fb0ff" />
+    </linearGradient>
+    <radialGradient id="gShine" cx="30%" cy="25%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0.27)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </radialGradient>
+    <filter id="sShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#052233" flood-opacity="0.14" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="none" />
+
+  <g transform="translate(100,110)">
+    <path d="M0,-86 C28,-62 46,-44 54,-22 C64,6 56,36 36,64 C16,92 -16,110 -36,70 C-56,110 -88,92 -108,64 C-128,36 -120,6 -110,-22 C-102,-44 -84,-62 -56,-86 C-32,-104 32,-104 0,-86 Z"
+          fill="url(#gDrop)" stroke="rgba(255,255,255,0.12)" stroke-width="1.8" filter="url(#sShadow)"/>
+    <path d="M-34,-58 C-22,-68 0,-74 18,-68 C12,-48 -8,-40 -28,-36 C-38,-44 -40,-52 -34,-58 Z"
+          fill="url(#gShine)" opacity="0.95" />
+
+    <!-- happy cheeks -->
+    <ellipse cx="-24" cy="12" rx="10" ry="6" fill="#ffd6e0" opacity="0.26" />
+    <ellipse cx="24" cy="12" rx="10" ry="6" fill="#ffd6e0" opacity="0.26" />
+
+    <!-- eyes squinting in joy -->
+    <g id="eyes" transform="translate(0,10)">
+      <path d="M-28,-2 C-20,-8 -12,-8 -4,-2" stroke="#02161d" stroke-width="3.5" fill="none" stroke-linecap="round" />
+      <path d="M4,-2 C12,-8 20,-8 28,-2" stroke="#02161d" stroke-width="3.5" fill="none" stroke-linecap="round" />
+      <!-- pupils are small dots when squinting -->
+    </g>
+
+    <!-- big smiling mouth -->
+    <path d="M-28,22 Q0,48 28,22 Q0,36 -28,22" fill="#02161d" opacity="0.95" />
+  </g>
+</svg>

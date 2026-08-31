@@ -1,0 +1,474 @@
+from __future__ import annotations
+
+import streamlit as st
+import logging
+
+from core.navigation import get_navigation_pages
+from core.session_manager import ensure_session_state, safe_rerun
+from core.theme import apply_theme, sync_theme_state
+from database.manager import authenticate_user, create_user, initialize_db, get_user_by_id, load_profile
+from services.hydration import sync_today_total
+
+logger = logging.getLogger(__name__)
+
+# Use st.rerun() for Streamlit 1.27+, fall back to experimental_rerun for older versions
+if hasattr(st, "rerun"):
+    st.rerun_func = st.rerun
+elif hasattr(st, "experimental_rerun"):
+    st.rerun_func = st.experimental_rerun
+else:
+    st.rerun_func = safe_rerun
+
+
+def render_auth_page() -> None:
+    st.markdown(
+        """
+        <style>
+        .auth-shell {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem 0 2rem;
+        }
+        .auth-intro {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0.5rem 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .auth-mascot {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.18), rgba(var(--accent-rgb), 0.12));
+            border: 1px solid var(--border);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), var(--shadow-soft);
+            font-size: 2.2rem;
+        }
+        .auth-copy {
+            margin: 0;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            color: var(--wb-text);
+            font-weight: 800;
+        }
+        .auth-subcopy {
+            margin: 0.2rem 0 0;
+            color: var(--wb-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .auth-card {
+            background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.08), rgba(var(--accent-rgb), 0.04)), var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(18px);
+            padding: 1.1rem 1rem 0.2rem;
+        }
+        .auth-card [role="tablist"] {
+            gap: 0.5rem;
+            margin-bottom: 0.6rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 0.35rem;
+        }
+        .auth-card [role="tab"] {
+            border-radius: 12px;
+            padding: 0.7rem 1.15rem;
+            font-weight: 700;
+            color: var(--wb-muted);
+            border: 1px solid transparent;
+            transition: all 180ms ease;
+        }
+        .auth-card [role="tab"][aria-selected="true"] {
+            background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.18), rgba(var(--accent-rgb), 0.18));
+            color: var(--wb-text);
+            border-color: rgba(var(--primary-rgb), 0.28);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.38);
+        }
+        .auth-card .stTextInput > div > div > input,
+        .auth-card .stTextInput input,
+        .auth-card .stDateInput input {
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 0.95rem 1rem;
+            background: rgba(255,255,255,0.28);
+            color: var(--wb-text);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.42), var(--shadow-deep);
+        }
+        .auth-card .stButton > button {
+            width: 100%;
+            border-radius: 999px;
+            padding: 0.9rem 1.4rem;
+            background: linear-gradient(135deg, rgba(var(--primary-rgb), 1), rgba(var(--accent-rgb), 0.98));
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.18);
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), var(--shadow-button);
+        }
+        .auth-card .stButton > button:hover {
+            transform: translateY(-1px) scale(1.01);
+        }
+        .auth-card .stAlert,
+        .auth-card .stSuccess {
+            border-radius: 16px;
+        }
+        @media (max-width: 768px) {
+            .auth-intro {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div class='auth-shell'>
+            <div class='auth-intro'>
+                <div class='auth-mascot'>💧</div>
+                <div>
+                    <h1 class='auth-copy'>Welcome to WaterBuddy</h1>
+                    <p class='auth-subcopy'>A calmer way to build your daily rhythm, one consistent sip at a time.</p>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
+    login_tab, register_tab = st.tabs(["Login", "Register"])
+
+    with login_tab:
+        with st.form("login_form", clear_on_submit=False):
+            identifier = st.text_input("Username or email")
+            password = st.text_input("Password", type="password")
+            submitted = st.form_submit_button("Sign in")
+            if submitted:
+                user = authenticate_user(identifier, password)
+                if user is None:
+                    st.error("Incorrect username/email or password.")
+                else:
+                    for key in [
+                        "profile_name",
+                        "age_group",
+                        "goal_ml",
+                        "daily_intake_ml",
+                        "goal_override",
+                        "profile_notes",
+                        "last_logged_amount",
+                        "last_message",
+                        "last_milestone",
+                        "weather_city",
+                        "weather_units",
+                        "sound_on",
+                    ]:
+                        st.session_state.pop(key, None)
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_id"] = user["id"]
+                    st.session_state["username"] = user["username"]
+                    # Remember this user so refreshes don't sign them out (lazy import)
+                    try:
+                        from database.manager import set_remembered_user
+
+                        set_remembered_user(user["id"])
+                    except Exception:
+                        pass
+                    st.session_state["page_nav"] = "Dashboard"
+                    st.success(f"Welcome back, {user['username']}!")
+                    st.rerun_func()
+
+    with register_tab:
+        with st.form("register_form", clear_on_submit=False):
+            username = st.text_input("Username")
+            email = st.text_input("Email")
+            password = st.text_input("Password", type="password")
+            confirm = st.text_input("Confirm password", type="password")
+            submitted = st.form_submit_button("Create account")
+            if submitted:
+                if not username or not email or not password:
+                    st.error("Please complete all fields.")
+                elif password != confirm:
+                    st.error("Passwords do not match.")
+                else:
+                    try:
+                        user = create_user(username, email, password)
+                    except ValueError as exc:
+                        st.error(str(exc))
+                    else:
+                        for key in [
+                            "profile_name",
+                            "age_group",
+                            "goal_ml",
+                            "daily_intake_ml",
+                            "goal_override",
+                            "profile_notes",
+                            "last_logged_amount",
+                            "last_message",
+                            "last_milestone",
+                            "weather_city",
+                            "weather_units",
+                            "sound_on",
+                        ]:
+                            st.session_state.pop(key, None)
+                        st.session_state["authenticated"] = True
+                        st.session_state["user_id"] = user["id"]
+                        st.session_state["username"] = user["username"]
+                        # Remember the new user and send them to the Profile page for personalization
+                        try:
+                            from database.manager import set_remembered_user
+
+                            set_remembered_user(user["id"])
+                        except Exception:
+                            pass
+                        st.session_state["page_nav"] = "Profile"
+                        # Mark profile as incomplete so we restrict navigation until they save
+                        st.session_state["profile_complete"] = False
+                        st.success("Account created successfully. Please complete your profile to continue.")
+                        st.rerun_func()
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+def main() -> None:
+    st.set_page_config(page_title="WaterBuddy", page_icon="💧", layout="wide")
+    initialize_db()
+    ensure_session_state()
+
+    # Auto-rehydrate a remembered user (development convenience).
+    if not st.session_state.get("authenticated", False):
+        try:
+            # Import lazily to avoid import-time cycles or partially-initialized modules
+            from database.manager import get_remembered_user, get_user_by_id
+
+            remembered = get_remembered_user()
+            if remembered is not None:
+                user = get_user_by_id(remembered)
+                if user is not None:
+                    st.session_state["authenticated"] = True
+                    st.session_state["user_id"] = user["id"]
+                    st.session_state["username"] = user["username"]
+        except Exception:
+            # Best-effort; continue without remembered user
+            pass
+
+    # Theme validation is handled in core.theme now; load persisted user preferences
+    # so they apply before any sidebar widgets are created.
+    try:
+        from database.manager import get_persisted_theme
+
+        persisted = get_persisted_theme()
+        if isinstance(persisted, dict):
+            theme = str(persisted.get("theme", "water")).lower()
+            if theme in {"water", "sun", "green", "neon", "yin_yang"}:
+                st.session_state["theme"] = theme
+            if "dark_mode" in persisted:
+                st.session_state["dark_mode"] = bool(persisted.get("dark_mode", False))
+        elif persisted is not None:
+            st.session_state["dark_mode"] = bool(persisted)
+    except Exception:
+        pass
+
+    sync_theme_state()
+    apply_theme()
+
+    # Testing helpers
+    # 1) Client-side helper that retries attaching a small JS API (best-effort).
+    st.markdown(
+        """
+        <script>
+        // Re-attach test helpers periodically so they remain available across
+        // Streamlit re-renders. This is a best-effort aid for automated E2E tests
+        // and has no impact on normal users.
+        (function attachHelpers(){
+            try {
+                if (!window.__wb_test_helpers) {
+                    window.__wb_test_helpers = {
+                        clickButtonByText: function(text) {
+                            try {
+                                const all = Array.from(document.querySelectorAll('button'));
+                                const candidate = all.find(b => (b.innerText || '').trim() === text);
+                                if (candidate) { candidate.click(); return true; }
+                                return false;
+                            } catch(e) { return false; }
+                        },
+                        clickRadioByLabel: function(label) {
+                            try {
+                                const els = Array.from(document.querySelectorAll('label, p'));
+                                const lbl = els.find(l => (l.innerText || '').trim() === label);
+                                if (lbl) {
+                                    const forId = lbl.getAttribute && lbl.getAttribute('for');
+                                    if (forId) {
+                                        const inp = document.getElementById(forId);
+                                        if (inp) { inp.click(); return true; }
+                                    }
+                                    lbl.click(); return true;
+                                }
+                                return false;
+                            } catch(e) { return false; }
+                        }
+                    };
+                }
+            } catch(e){}
+            try { window.__wb_test_helpers._attachedAt = Date.now(); } catch(_){}
+            setTimeout(attachHelpers, 1500);
+        })();
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # 2) Query-param based server-side test hooks: allow E2E tests to trigger actions
+    # by adding a query parameter like ?wb_action=btn:+250 or ?wb_action=nav:Hydration
+    # These are only intended for test automation and do nothing when absent.
+    try:
+        # experimental_get_query_params is not available in all Streamlit versions —
+        # fall back to an empty dict when it's missing.
+        try:
+            params = st.experimental_get_query_params()
+        except Exception:
+            params = {}
+        # Support a test automation action hook via ?wb_action=... (keeps legacy behavior)
+        test_action = params.get('wb_action', [None])[0] if params else None
+        # Also accept ?wb_dark=1 or ?wb_dark=true to safely request dark mode from Settings
+        wb_dark_param = params.get('wb_dark', [None])[0] if params else None
+        if wb_dark_param is not None:
+            try:
+                requested = str(wb_dark_param).lower()
+                if requested in ("1", "true", "yes", "on"):
+                    st.session_state['dark_mode'] = True
+                else:
+                    st.session_state['dark_mode'] = False
+            except Exception:
+                logger.exception("failed to apply wb_dark param")
+
+        if test_action:
+            if test_action.startswith('btn:+'):
+                # e.g. wb_action=btn:+250
+                try:
+                    amt = int(test_action.split(':', 1)[1].lstrip('+'))
+                    from services.hydration import update_daily_intake
+
+                    update_daily_intake(amt, 'quick')
+                    st.rerun_func()
+                except Exception:
+                    logger.exception("wb_action btn handler failed")
+            elif test_action.startswith('nav:'):
+                try:
+                    page_target = test_action.split(':', 1)[1]
+                    st.session_state['page_nav'] = page_target
+                    st.rerun_func()
+                except Exception:
+                    logger.exception("wb_action nav handler failed")
+            elif test_action == 'logout':
+                for key in [
+                    'authenticated', 'user_id', 'username', 'profile_name', 'age_group', 'goal_ml', 'daily_intake_ml', 'goal_override', 'profile_notes', 'last_logged_amount', 'last_message', 'last_milestone', 'weather_city', 'weather_units', 'sound_on',
+                ]:
+                    st.session_state.pop(key, None)
+                st.rerun_func()
+    except Exception:
+        # Don't fail startup if the experimental API is unavailable
+        logger.exception("experimental_get_query_params failed")
+
+    if not st.session_state.get("authenticated", False):
+        render_auth_page()
+        return
+
+    sync_today_total()
+    pages = get_navigation_pages()
+
+    # If the user is authenticated but has no saved profile, force the Profile page
+    if st.session_state.get("authenticated", False):
+        user_id = st.session_state.get("user_id")
+        try:
+            saved_profile = load_profile(user_id=user_id)
+        except Exception:
+            saved_profile = None
+        if not saved_profile:
+            st.session_state["profile_complete"] = False
+            # restrict navigation to Profile until personalization is complete
+            pages = {"Profile": pages.get("Profile")}
+        else:
+            st.session_state["profile_complete"] = True
+
+    # If a page navigation was requested by code during a user's interaction (e.g. after saving a profile),
+    # apply it now before any widgets with key 'page_nav' are created. This avoids StreamlitDuplicate/Modification errors.
+    if "pending_page_nav" in st.session_state:
+        try:
+            st.session_state["page_nav"] = st.session_state.pop("pending_page_nav")
+        except Exception:
+            # Best effort; ignore if setting page_nav fails
+            pass
+
+
+    page_names = list(pages.keys())
+    with st.sidebar:
+        st.markdown(
+            '<div class="brand-card"><div class="brand-label"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c-3.3 4.6-6 7.9-6 11.5a6 6 0 0012 0c0-3.6-2.7-7-6-11.5z"/></svg></span><h1>WaterBuddy</h1></div><p>Hydration, coaching, and calm momentum in one place.</p></div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown("---")
+        st.caption(f"Signed in as {st.session_state.get('username', 'User')}")
+        selected_page = st.radio("Navigate", page_names, index=0, key="page_nav")
+        st.markdown("---")
+        st.caption("Theme")
+        # Dark mode is now an independent toggle; base theme is selected in Settings
+        dark_mode_toggle = st.checkbox(
+            "Dark mode",
+            value=st.session_state.get("dark_mode", False),
+            key="dark_mode",
+            help="Switch between light and dark themes",
+        )
+        # Keep explicit boolean in state (widget already writes it back), so nothing else required
+
+        sync_theme_state()
+        apply_theme()
+        if st.button("Logout"):
+            for key in [
+                "authenticated",
+                "user_id",
+                "username",
+                "profile_name",
+                "age_group",
+                "goal_ml",
+                "daily_intake_ml",
+                "goal_override",
+                "profile_notes",
+                "last_logged_amount",
+                "last_message",
+                "last_milestone",
+                "weather_city",
+                "weather_units",
+                "sound_on",
+            ]:
+                st.session_state.pop(key, None)
+            try:
+                from database.manager import set_remembered_user
+
+                set_remembered_user(None)
+            except Exception:
+                pass
+            st.rerun_func()
+        st.markdown("---")
+        st.caption("Daily rhythm")
+        st.metric("Intake", f"{st.session_state.get('daily_intake_ml', 0)} ml")
+        st.metric("Goal", f"{st.session_state.get('goal_ml', 2500)} ml")
+        st.markdown(
+            "<div class='badge-card'><div class='badge-icon'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 3l1.5 3.5 3.5 1.5-3.5 1.5L12 15l-1.5-3.5-3.5-1.5 3.5-1.5L12 3z'/></svg></div><div><div class='badge-title'>Premium mode</div><div class='badge-detail'>Every sip is tracked with calm, polished feedback.</div></div></div>",
+            unsafe_allow_html=True,
+        )
+
+    pages[selected_page]()
+
+
+if __name__ == "__main__":
+    main()

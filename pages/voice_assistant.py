@@ -6,7 +6,6 @@ import streamlit as st
 
 from components.cards import render_hero_banner
 from core.session_manager import safe_rerun
-from services.ai import AI_TRIAL_LIMIT, _get_trial_usage
 from services.weather import fetch_weather
 from services.voice import VoiceService
 from services.mascot_service import get_mascot_service
@@ -35,12 +34,10 @@ def render_voice_assistant_page() -> None:
         "Press the microphone, speak naturally, and hear WaterBuddy reply out loud.",
         badge="Voice",
     )
-    used = _get_trial_usage()
-    st.caption(f"Free voice/AI trial: {used}/{AI_TRIAL_LIMIT} uses")
 
     def _safe_rerun() -> None:
         """Delegate to the central safe_rerun helper."""
-        st.experimental_rerun()
+        st.rerun() if hasattr(st, "rerun") else st.experimental_rerun()
 
     # Monkey-patch WaveSurfer (if present) to avoid "Container not found" errors
     # This guards third-party waveform initialization (used by some Streamlit audio widgets)
@@ -248,7 +245,7 @@ def render_voice_assistant_page() -> None:
             st.session_state["voice_player_key"] = st.session_state.get("voice_player_key", 0) + 1
         if reset:
             _reset_voice_state()
-            st.experimental_rerun()
+            st.rerun() if hasattr(st, "rerun") else st.experimental_rerun()
 
         # Optional debug panel to help diagnose playback issues
         debug_mode = st.checkbox("Enable voice debug info", key="voice_debug_toggle")

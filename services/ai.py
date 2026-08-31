@@ -4,9 +4,6 @@ from core.config import get_setting
 
 import streamlit as st
 
-AI_TRIAL_LIMIT = 3
-_MODULE_AI_TRIAL_USAGE = 0
-
 
 class ApiRateLimitError(Exception):
     def __init__(self, message: str, retry_seconds: int | None = None) -> None:
@@ -99,27 +96,6 @@ def _build_chat_prompt(
     )
 
 
-def _get_trial_usage() -> int:
-    if hasattr(st, "session_state"):
-        return int(st.session_state.setdefault("ai_trial_usage", 0))
-    return _MODULE_AI_TRIAL_USAGE
-
-
-def _consume_ai_trial() -> tuple[bool, int]:
-    if hasattr(st, "session_state"):
-        used = int(st.session_state.setdefault("ai_trial_usage", 0))
-        if used >= AI_TRIAL_LIMIT:
-            return False, used
-        st.session_state["ai_trial_usage"] = used + 1
-        return True, used + 1
-
-    global _MODULE_AI_TRIAL_USAGE
-    if _MODULE_AI_TRIAL_USAGE >= AI_TRIAL_LIMIT:
-        return False, _MODULE_AI_TRIAL_USAGE
-    _MODULE_AI_TRIAL_USAGE += 1
-    return True, _MODULE_AI_TRIAL_USAGE
-
-
 def get_ai_response(
     user_message: str,
     profile_name: str,
@@ -134,14 +110,6 @@ def get_ai_response(
 
     if not user_message or not user_message.strip():
         return "I did not hear a question. Please type or speak again so WaterBuddy can help."
-
-    allowed, used = _consume_ai_trial()
-    if not allowed:
-        remaining = max(AI_TRIAL_LIMIT - used, 0)
-        return (
-            "Free AI trial used up. This coach is limited to 3 uses in this build, and full access will be added in future updates. "
-            f"You have used {used}/{AI_TRIAL_LIMIT} AI trial uses."
-        )
 
     try:
         model = _get_genai_model(api_key)

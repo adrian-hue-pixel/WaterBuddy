@@ -1,0 +1,26 @@
+.env
+.env.local
+.env.*
+!.env.example
+
+# Local app/runtime data
+waterbuddy.db
+*.db
+*.sqlite3
+.last_user
+.theme_pref
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.venv/
+venv/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.streamlit/

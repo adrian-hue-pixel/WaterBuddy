@@ -1,0 +1,354 @@
+from __future__ import annotations
+
+from pathlib import Path
+import logging
+
+import streamlit as st
+
+logger = logging.getLogger(__name__)
+STYLE_PATH = Path(__file__).resolve().parents[1] / "styles" / "glassmorphism.css"
+
+
+def sync_theme_state() -> None:
+    """Keep the selected base theme valid for the available theme families."""
+    base = str(st.session_state.get("theme", "water")).lower()
+    valid_base = {"water", "sun", "green", "neon", "yin_yang"}
+    if base not in valid_base:
+        base = "water"
+    st.session_state["theme"] = base
+
+
+def apply_theme(dark_override: bool | None = None) -> None:
+    """Apply CSS variable overrides for all available theme families."""
+    if dark_override is None:
+        dark = bool(st.session_state.get("dark_mode", False))
+    else:
+        dark = bool(dark_override)
+
+    base = str(st.session_state.get("theme", "water")).lower()
+
+    if base == "water":
+        if dark:
+            final = {
+                "--bg": "#061021",
+                "--bg-end": "#0d1a2c",
+                "--surface": "rgba(10, 20, 34, 0.72)",
+                "--surface-alt": "rgba(12, 24, 42, 0.55)",
+                "--text": "#eef7ff",
+                "--muted": "#9ec4e3",
+                "--primary": "#41d8ff",
+                "--accent": "#5cb8ff",
+                "--accent-warm": "#ffbc86",
+                "--border": "rgba(255, 255, 255, 0.14)",
+                "--border-strong": "rgba(255, 255, 255, 0.08)",
+                "--shadow-soft": "0 24px 60px rgba(0, 0, 0, 0.34)",
+                "--shadow-deep": "0 18px 44px rgba(0, 0, 0, 0.4)",
+                "--shadow-button": "0 18px 34px rgba(0, 0, 0, 0.28)",
+                "--glow": "rgba(65, 216, 255, 0.18)",
+                "--primary-rgb": "65, 216, 255",
+                "--accent-rgb": "92, 184, 255",
+                "--surface-glass": "rgba(10, 20, 34, 0.72)",
+                "--wb-background": "#061021",
+                "--wb-background-end": "#0d1a2c",
+                "--wb-surface": "rgba(10, 20, 34, 0.72)",
+                "--wb-surface-alt": "rgba(12, 24, 42, 0.55)",
+                "--wb-text": "#eef7ff",
+                "--wb-muted": "#9ec4e3",
+                "--wb-primary": "#41d8ff",
+                "--wb-accent": "#5cb8ff",
+                "--wb-accent-warm": "#ffbc86",
+                "--wb-border": "rgba(255, 255, 255, 0.14)",
+            }
+        else:
+            final = {
+                "--bg": "#f3fbff",
+                "--bg-end": "#e8f6ff",
+                "--surface": "rgba(255, 255, 255, 0.88)",
+                "--surface-alt": "rgba(237, 247, 255, 0.78)",
+                "--text": "#11314d",
+                "--muted": "#4b647c",
+                "--primary": "#7fdfff",
+                "--accent": "#8fd9ff",
+                "--accent-warm": "#ffd6a8",
+                "--border": "rgba(17, 49, 77, 0.12)",
+                "--border-strong": "rgba(17, 49, 77, 0.14)",
+                "--shadow-soft": "0 24px 60px rgba(19, 58, 94, 0.10)",
+                "--shadow-deep": "0 14px 32px rgba(17, 49, 77, 0.10)",
+                "--shadow-button": "0 18px 34px rgba(15, 96, 132, 0.18)",
+                "--glow": "rgba(18, 183, 214, 0.16)",
+                "--primary-rgb": "127, 223, 255",
+                "--accent-rgb": "143, 217, 255",
+                "--surface-glass": "rgba(255, 255, 255, 0.78)",
+                "--wb-background": "#f3fbff",
+                "--wb-background-end": "#e8f6ff",
+                "--wb-surface": "rgba(255, 255, 255, 0.88)",
+                "--wb-surface-alt": "rgba(237, 247, 255, 0.78)",
+                "--wb-text": "#11314d",
+                "--wb-muted": "#4b647c",
+                "--wb-primary": "#7fdfff",
+                "--wb-accent": "#8fd9ff",
+                "--wb-accent-warm": "#ffd6a8",
+                "--wb-border": "rgba(17, 49, 77, 0.12)",
+            }
+    elif base == "green":
+        if dark:
+            final = {
+                "--bg": "#071d16",
+                "--bg-end": "#102a21",
+                "--surface": "rgba(12, 34, 28, 0.76)",
+                "--surface-alt": "rgba(18, 48, 38, 0.70)",
+                "--text": "#ecfdf5",
+                "--muted": "#bfe4d2",
+                "--primary": "#64d79d",
+                "--accent": "#55b882",
+                "--accent-warm": "#f2c66d",
+                "--border": "rgba(123, 193, 152, 0.18)",
+                "--border-strong": "rgba(120, 198, 167, 0.18)",
+                "--shadow-soft": "0 24px 60px rgba(2, 16, 12, 0.28)",
+                "--shadow-deep": "0 18px 42px rgba(2, 16, 12, 0.30)",
+                "--shadow-button": "0 18px 34px rgba(9, 40, 31, 0.26)",
+                "--glow": "rgba(100, 215, 157, 0.18)",
+                "--primary-rgb": "100, 215, 157",
+                "--accent-rgb": "85, 184, 130",
+                "--surface-glass": "rgba(11, 36, 29, 0.72)",
+                "--wb-background": "#071d16",
+                "--wb-background-end": "#102a21",
+                "--wb-surface": "rgba(12, 34, 28, 0.76)",
+                "--wb-surface-alt": "rgba(18, 48, 38, 0.70)",
+                "--wb-text": "#ecfdf5",
+                "--wb-muted": "#bfe4d2",
+                "--wb-primary": "#64d79d",
+                "--wb-accent": "#55b882",
+                "--wb-accent-warm": "#f2c66d",
+                "--wb-border": "rgba(123, 193, 152, 0.18)",
+            }
+        else:
+            final = {
+                "--bg": "#f3fbff",
+                "--bg-end": "#e8f6ff",
+                "--surface": "rgba(255, 255, 255, 0.88)",
+                "--surface-alt": "rgba(237, 247, 255, 0.78)",
+                "--text": "#11314d",
+                "--muted": "#4b647c",
+                "--primary": "#9be6b8",
+                "--accent": "#8fd9b0",
+                "--accent-warm": "#f5e1a8",
+                "--border": "rgba(17, 49, 77, 0.12)",
+                "--border-strong": "rgba(17, 49, 77, 0.14)",
+                "--shadow-soft": "0 24px 60px rgba(19, 58, 94, 0.10)",
+                "--shadow-deep": "0 14px 32px rgba(17, 49, 77, 0.10)",
+                "--shadow-button": "0 18px 34px rgba(15, 96, 132, 0.18)",
+                "--glow": "rgba(100, 215, 157, 0.18)",
+                "--primary-rgb": "155, 230, 184",
+                "--accent-rgb": "143, 217, 176",
+                "--surface-glass": "rgba(255, 255, 255, 0.78)",
+                "--wb-background": "#f3fbff",
+                "--wb-background-end": "#e8f6ff",
+                "--wb-surface": "rgba(255, 255, 255, 0.88)",
+                "--wb-surface-alt": "rgba(237, 247, 255, 0.78)",
+                "--wb-text": "#11314d",
+                "--wb-muted": "#4b647c",
+                "--wb-primary": "#9be6b8",
+                "--wb-accent": "#8fd9b0",
+                "--wb-accent-warm": "#f5e1a8",
+                "--wb-border": "rgba(17, 49, 77, 0.12)",
+            }
+    elif base == "neon":
+        if dark:
+            final = {
+                "--bg": "#090712",
+                "--bg-end": "#160d24",
+                "--surface": "rgba(20, 14, 36, 0.84)",
+                "--surface-alt": "rgba(33, 23, 52, 0.8)",
+                "--text": "#f5edff",
+                "--muted": "#d2baf8",
+                "--primary": "#b57dff",
+                "--accent": "#8a5cff",
+                "--accent-warm": "#ff8dd6",
+                "--border": "rgba(181, 125, 255, 0.22)",
+                "--border-strong": "rgba(181, 125, 255, 0.3)",
+                "--shadow-soft": "0 24px 60px rgba(119, 69, 255, 0.24)",
+                "--shadow-deep": "0 18px 42px rgba(0, 0, 0, 0.42)",
+                "--shadow-button": "0 18px 34px rgba(138, 92, 255, 0.28)",
+                "--glow": "rgba(181, 125, 255, 0.22)",
+                "--primary-rgb": "181, 125, 255",
+                "--accent-rgb": "138, 92, 255",
+                "--surface-glass": "rgba(20, 14, 36, 0.78)",
+                "--wb-background": "#090712",
+                "--wb-background-end": "#160d24",
+                "--wb-surface": "rgba(20, 14, 36, 0.84)",
+                "--wb-surface-alt": "rgba(33, 23, 52, 0.8)",
+                "--wb-text": "#f5edff",
+                "--wb-muted": "#d2baf8",
+                "--wb-primary": "#b57dff",
+                "--wb-accent": "#8a5cff",
+                "--wb-accent-warm": "#ff8dd6",
+                "--wb-border": "rgba(181, 125, 255, 0.22)",
+            }
+        else:
+            final = {
+                "--bg": "#f7f3ff",
+                "--bg-end": "#efe5ff",
+                "--surface": "rgba(255, 255, 255, 0.9)",
+                "--surface-alt": "rgba(244, 233, 255, 0.82)",
+                "--text": "#201431",
+                "--muted": "#5a466d",
+                "--primary": "#8b5cf6",
+                "--accent": "#a855f7",
+                "--accent-warm": "#ec4899",
+                "--border": "rgba(139, 92, 246, 0.18)",
+                "--border-strong": "rgba(139, 92, 246, 0.26)",
+                "--shadow-soft": "0 24px 60px rgba(108, 58, 180, 0.12)",
+                "--shadow-deep": "0 18px 42px rgba(99, 51, 154, 0.12)",
+                "--shadow-button": "0 18px 34px rgba(168, 85, 247, 0.18)",
+                "--glow": "rgba(168, 85, 247, 0.14)",
+                "--primary-rgb": "139, 92, 246",
+                "--accent-rgb": "168, 85, 247",
+                "--surface-glass": "rgba(255, 255, 255, 0.88)",
+                "--wb-background": "#f7f3ff",
+                "--wb-background-end": "#efe5ff",
+                "--wb-surface": "rgba(255, 255, 255, 0.9)",
+                "--wb-surface-alt": "rgba(244, 233, 255, 0.82)",
+                "--wb-text": "#201431",
+                "--wb-muted": "#5a466d",
+                "--wb-primary": "#8b5cf6",
+                "--wb-accent": "#a855f7",
+                "--wb-accent-warm": "#ec4899",
+                "--wb-border": "rgba(139, 92, 246, 0.18)",
+            }
+    elif base == "yin_yang":
+        if dark:
+            final = {
+                "--bg": "#000000",
+                "--bg-end": "#000000",
+                "--surface": "rgba(255, 255, 255, 0.04)",
+                "--surface-alt": "rgba(255, 255, 255, 0.08)",
+                "--text": "#ffffff",
+                "--muted": "#e8e8e8",
+                "--primary": "#ffffff",
+                "--accent": "#ffffff",
+                "--accent-warm": "#ffffff",
+                "--border": "rgba(255, 255, 255, 0.22)",
+                "--border-strong": "rgba(255, 255, 255, 0.34)",
+                "--shadow-soft": "0 24px 60px rgba(255, 255, 255, 0.06)",
+                "--shadow-deep": "0 18px 44px rgba(255, 255, 255, 0.08)",
+                "--shadow-button": "0 18px 34px rgba(255, 255, 255, 0.08)",
+                "--glow": "rgba(255, 255, 255, 0.12)",
+                "--primary-rgb": "255, 255, 255",
+                "--accent-rgb": "255, 255, 255",
+                "--surface-glass": "rgba(12, 12, 12, 0.9)",
+                "--wb-background": "#000000",
+                "--wb-background-end": "#000000",
+                "--wb-surface": "rgba(255, 255, 255, 0.04)",
+                "--wb-surface-alt": "rgba(255, 255, 255, 0.08)",
+                "--wb-text": "#ffffff",
+                "--wb-muted": "#e8e8e8",
+                "--wb-primary": "#ffffff",
+                "--wb-accent": "#ffffff",
+                "--wb-accent-warm": "#ffffff",
+                "--wb-border": "rgba(255, 255, 255, 0.22)",
+            }
+        else:
+            final = {
+                "--bg": "#ffffff",
+                "--bg-end": "#ffffff",
+                "--surface": "rgba(0, 0, 0, 0.04)",
+                "--surface-alt": "rgba(0, 0, 0, 0.08)",
+                "--text": "#000000",
+                "--muted": "#333333",
+                "--primary": "#000000",
+                "--accent": "#000000",
+                "--accent-warm": "#000000",
+                "--border": "rgba(0, 0, 0, 0.18)",
+                "--border-strong": "rgba(0, 0, 0, 0.26)",
+                "--shadow-soft": "0 24px 60px rgba(0, 0, 0, 0.06)",
+                "--shadow-deep": "0 18px 44px rgba(0, 0, 0, 0.08)",
+                "--shadow-button": "0 18px 34px rgba(0, 0, 0, 0.08)",
+                "--glow": "rgba(0, 0, 0, 0.12)",
+                "--primary-rgb": "0, 0, 0",
+                "--accent-rgb": "0, 0, 0",
+                "--surface-glass": "rgba(255, 255, 255, 0.9)",
+                "--wb-background": "#ffffff",
+                "--wb-background-end": "#ffffff",
+                "--wb-surface": "rgba(0, 0, 0, 0.04)",
+                "--wb-surface-alt": "rgba(0, 0, 0, 0.08)",
+                "--wb-text": "#000000",
+                "--wb-muted": "#333333",
+                "--wb-primary": "#000000",
+                "--wb-accent": "#000000",
+                "--wb-accent-warm": "#000000",
+                "--wb-border": "rgba(0, 0, 0, 0.18)",
+            }
+    else:
+        if dark:
+            final = {
+                "--bg": "#0f0b0a",
+                "--bg-end": "#1b1210",
+                "--surface": "rgba(16,12,12,0.84)",
+                "--surface-alt": "rgba(30,20,18,0.8)",
+                "--text": "#faeee6",
+                "--muted": "#e7c9ad",
+                "--primary": "#ff8a50",
+                "--accent": "#d96d3d",
+                "--accent-warm": "#b24b1a",
+                "--border": "rgba(255, 255, 255, 0.08)",
+                "--border-strong": "rgba(255, 255, 255, 0.12)",
+                "--shadow-soft": "0 24px 60px rgba(0, 0, 0, 0.34)",
+                "--shadow-deep": "0 14px 32px rgba(0, 0, 0, 0.4)",
+                "--shadow-button": "0 18px 34px rgba(0, 0, 0, 0.28)",
+                "--glow": "rgba(255, 138, 80, 0.16)",
+                "--primary-rgb": "255, 138, 80",
+                "--accent-rgb": "217, 109, 61",
+                "--surface-glass": "rgba(16,12,12,0.84)",
+                "--wb-background": "#0f0b0a",
+                "--wb-background-end": "#1b1210",
+                "--wb-surface": "rgba(16,12,12,0.84)",
+                "--wb-surface-alt": "rgba(30,20,18,0.8)",
+                "--wb-text": "#faeee6",
+                "--wb-muted": "#e7c9ad",
+                "--wb-primary": "#ff8a50",
+                "--wb-accent": "#d96d3d",
+                "--wb-accent-warm": "#b24b1a",
+                "--wb-border": "rgba(255, 255, 255, 0.08)",
+            }
+        else:
+            final = {
+                "--bg": "#fff5f0",
+                "--bg-end": "#ffe4d3",
+                "--surface": "rgba(255,255,255,0.86)",
+                "--surface-alt": "rgba(255,240,230,0.80)",
+                "--text": "#3f2618",
+                "--muted": "#805c4d",
+                "--primary": "#ff8d5c",
+                "--accent": "#d96d3d",
+                "--accent-warm": "#fb923c",
+                "--border": "rgba(108, 70, 56, 0.12)",
+                "--border-strong": "rgba(217, 109, 61, 0.14)",
+                "--shadow-soft": "0 24px 60px rgba(134, 56, 22, 0.10)",
+                "--shadow-deep": "0 16px 32px rgba(118, 64, 44, 0.10)",
+                "--shadow-button": "0 18px 34px rgba(199, 96, 46, 0.18)",
+                "--glow": "rgba(255, 149, 96, 0.16)",
+                "--primary-rgb": "255, 141, 92",
+                "--accent-rgb": "217, 109, 61",
+                "--surface-glass": "rgba(255, 245, 238, 0.82)",
+                "--wb-background": "#fff5f0",
+                "--wb-background-end": "#ffe4d3",
+                "--wb-surface": "rgba(255,255,255,0.86)",
+                "--wb-surface-alt": "rgba(255,240,230,0.80)",
+                "--wb-text": "#3f2618",
+                "--wb-muted": "#805c4d",
+                "--wb-primary": "#ff8d5c",
+                "--wb-accent": "#d96d3d",
+                "--wb-accent-warm": "#fb923c",
+                "--wb-border": "rgba(108, 70, 56, 0.12)",
+            }
+
+    css = STYLE_PATH.read_text(encoding="utf-8")
+    override_lines = [":root {"]
+    for key, value in final.items():
+        override_lines.append(f"    {key}: {value};")
+    override_lines.append("}")
+    override_css = "\n" + "\n".join(override_lines)
+
+    logger.debug("apply_theme: base=%s dark=%s final=%s", base, dark, final)
+    st.markdown(f"<style>{css}{override_css}</style>", unsafe_allow_html=True)

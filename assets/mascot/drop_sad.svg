@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="200" height="260" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="gDrop" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#9ef0ff" />
+      <stop offset="60%" stop-color="#6de9ff" />
+      <stop offset="100%" stop-color="#5fb0ff" />
+    </linearGradient>
+    <radialGradient id="gShine" cx="30%" cy="25%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0.25)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </radialGradient>
+    <filter id="sShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#052233" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="none" />
+
+  <g transform="translate(100,110)">
+    <path d="M0,-86 C28,-62 46,-44 54,-22 C64,6 56,36 36,64 C16,92 -16,110 -36,70 C-56,110 -88,92 -108,64 C-128,36 -120,6 -110,-22 C-102,-44 -84,-62 -56,-86 C-32,-104 32,-104 0,-86 Z"
+          fill="url(#gDrop)" stroke="rgba(255,255,255,0.12)" stroke-width="1.8" filter="url(#sShadow)"/>
+    <path d="M-34,-58 C-22,-68 0,-74 18,-68 C12,-48 -8,-40 -28,-36 C-38,-44 -40,-52 -34,-58 Z"
+          fill="url(#gShine)" opacity="0.95" />
+
+    <g transform="translate(0,12)">
+      <path d="M-28,-2 Q-20,-8 -12,-2" stroke="#02161d" stroke-width="3" fill="none" stroke-linecap="round" />
+      <path d="M12,-2 Q20,-8 28,-2" stroke="#02161d" stroke-width="3" fill="none" stroke-linecap="round" />
+      <circle cx="-14" cy="0" r="2.6" fill="#02161d" />
+      <circle cx="14" cy="0" r="2.6" fill="#02161d" />
+    </g>
+
+    <path d="M-34,10 Q-20,2 -6,10" stroke="#0b2b3a" stroke-width="2.2" fill="none" opacity="0.88" />
+    <path d="M6,10 Q20,2 34,10" stroke="#0b2b3a" stroke-width="2.2" fill="none" opacity="0.88" />
+
+    <path d="M-18,30 Q0,18 18,30" stroke="#02161d" stroke-width="3" fill="none" stroke-linecap="round" />
+  </g>
+</svg>

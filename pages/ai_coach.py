@@ -4,7 +4,7 @@ import streamlit as st
 
 from components.cards import render_hero_banner
 from core.session_manager import safe_rerun
-from services.ai import AI_TRIAL_LIMIT, _get_trial_usage, get_ai_response
+from services.ai import get_ai_response
 from services.mascot_service import get_mascot_service
 
 
@@ -34,9 +34,6 @@ def render_ai_coach_page() -> None:
         "A thoughtful wellness companion that responds to your progress and the day’s conditions.",
         badge="Smart coaching",
     )
-    used = _get_trial_usage()
-    st.caption(f"Free AI trial: {used}/{AI_TRIAL_LIMIT} uses")
-
     # Weather integration removed — provide a neutral placeholder for prompts.
     weather_summary = "Weather data disabled"
 
@@ -71,4 +68,4 @@ def render_ai_coach_page() -> None:
             st.session_state.setdefault("ai_chat_history", []).append(
                 {"role": "assistant", "message": response}
             )
-        st.experimental_rerun()
+        st.rerun() if hasattr(st, "rerun") else st.experimental_rerun()
