@@ -132,3 +132,43 @@ def get_streak(days: int = 7) -> int:
         streak += 1
         current -= timedelta(days=1)
     return streak
+
+class HydrationService:
+    """Object-oriented interface for the hydration service."""
+
+    def get_goal(self) -> int:
+        _, goal = sync_today_total()
+        return goal
+
+    def get_today_total(self) -> int:
+        intake, _ = sync_today_total()
+        return intake
+
+    def add_entry(self, amount_ml: int, note: str | None = None) -> tuple[int, int]:
+        source = note.strip() if note and note.strip() else "manual"
+        return update_daily_intake(int(amount_ml), source)
+
+    def undo_last(self) -> tuple[int, int]:
+        # The current database API does not expose deletion of one intake.
+        # Keep this safe rather than deleting an arbitrary record.
+        return sync_today_total()
+
+    def get_today_entries(self, limit: int = 20):
+        today = date.today().strftime("%Y-%m-%d")
+        user_id = st.session_state.get("user_id")
+        history = get_recent_history(days=1, user_id=user_id)
+        entries = [
+            item for item in history
+            if item.get("intake_date") == today
+        ]
+        return entries[:limit]
+
+    def set_goal(self, goal_ml: int) -> int:
+        goal = max(1, min(int(goal_ml), 5000))
+        st.session_state["goal_ml"] = goal
+        st.session_state["goal_override"] = True
+        return goal
+
+    def get_history(self):
+        user_id = st.session_state.get("user_id")
+        return get_recent_history(days=365, user_id=user_id)
