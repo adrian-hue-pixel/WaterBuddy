@@ -8,3 +8,4 @@ SpeechRecognition
 gTTS
 pytest
 pytest-cov
+plotly
