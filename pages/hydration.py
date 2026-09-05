@@ -49,7 +49,12 @@ def render_hydration_page() -> None:
         render_progress_visual(percent, intake_ml, goal_ml, celebrate=hit_milestone)
         st.progress(percent / 100)
         # Mascot on Hydration page too
-        render_mascot(snd_on=st.session_state.get('sound_on', True), last_logged=st.session_state.get('last_logged_amount', 0), celebrate=hit_milestone)
+        render_mascot(
+            snd_on=st.session_state.get('sound_on', True),
+            last_logged=st.session_state.get('last_logged_amount', 0),
+            celebrate=hit_milestone,
+            show_animations=st.session_state.get('show_animations', True),
+        )
     st.markdown("### Snapshot")
     snap = st.columns(3)
     with snap[0]:

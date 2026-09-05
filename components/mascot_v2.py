@@ -79,7 +79,7 @@ def _get_state_name(ms, last_logged: int, celebrate: bool) -> str:
     return state_name
 
 
-def render_mascot(snd_on: bool = True, last_logged: int = 0, celebrate: bool = False) -> None:
+def render_mascot(snd_on: bool = True, last_logged: int = 0, celebrate: bool = False, show_animations: bool = True) -> None:
     """Render a premium 3D mascot with hydration-driven mood changes."""
     ms = get_mascot_service()
     state_name = _get_state_name(ms, last_logged, celebrate)
@@ -215,6 +215,98 @@ body { margin:0; background: transparent; }
 @media (prefers-reduced-motion: reduce) {
   .mascot-idle, .mascot-bounce, .mascot-celebrate, .mascot-nudge, .mascot-state-transition { animation: none !important; }
 }
+
+/* ===== MASCOT EMOTIONAL STATE ANIMATIONS ===== */
+
+.mascot-state-transition {
+  animation: mascotStateEnter 260ms ease-out;
+}
+
+.mascot-happy {
+  animation: mascotHappy 900ms ease-in-out infinite;
+}
+
+.mascot-drinking {
+  animation: mascotDrinking 650ms ease-in-out;
+}
+
+.mascot-excited {
+  animation: mascotExcited 520ms ease-in-out infinite;
+}
+
+.mascot-warning {
+  animation: mascotWarning 700ms ease-in-out infinite;
+}
+
+.mascot-sad {
+  animation: mascotSad 1200ms ease-in-out infinite;
+}
+
+.mascot-thinking {
+  animation: mascotThinking 1000ms ease-in-out infinite;
+}
+
+.mascot-listening {
+  animation: mascotListening 700ms ease-in-out infinite;
+}
+
+.mascot-speaking {
+  animation: mascotSpeaking 500ms ease-in-out infinite;
+}
+
+@keyframes mascotStateEnter {
+  0%   { opacity: .65; transform: scale(.94); }
+  100% { opacity: 1; }
+}
+
+@keyframes mascotHappy {
+  0%,100% { transform: translateY(0) rotate(0deg) scale(1); }
+  25%     { transform: translateY(-7px) rotate(-3deg) scale(1.03); }
+  50%     { transform: translateY(0) rotate(3deg) scale(1.02); }
+  75%     { transform: translateY(-5px) rotate(-2deg) scale(1.03); }
+}
+
+@keyframes mascotDrinking {
+  0%   { transform: translateY(0) rotate(0deg); }
+  25%  { transform: translateY(4px) rotate(-5deg) scale(.97); }
+  50%  { transform: translateY(7px) rotate(4deg) scale(.96); }
+  75%  { transform: translateY(2px) rotate(-2deg) scale(.99); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes mascotExcited {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%     { transform: translateY(-12px) scale(1.07); }
+}
+
+@keyframes mascotWarning {
+  0%,100% { transform: translateX(0) rotate(-2deg); }
+  20%     { transform: translateX(-7px) rotate(-5deg); }
+  40%     { transform: translateX(7px) rotate(5deg); }
+  60%     { transform: translateX(-5px) rotate(-4deg); }
+  80%     { transform: translateX(5px) rotate(3deg); }
+}
+
+@keyframes mascotSad {
+  0%,100% { transform: translateY(3px) rotate(-2deg); }
+  50%     { transform: translateY(7px) rotate(2deg); }
+}
+
+@keyframes mascotThinking {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%     { transform: translateY(-3px) rotate(4deg); }
+}
+
+@keyframes mascotListening {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.05) translateY(-3px); }
+}
+
+@keyframes mascotSpeaking {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%     { transform: translateY(-4px) scale(1.04); }
+}
+
 </style>
 </head>
 <body>
@@ -255,6 +347,8 @@ body { margin:0; background: transparent; }
   const SOUND_ENABLED = __SOUND_ENABLED__;
   const LAST_LOGGED = __LAST_LOGGED__;
   const CELEBRATE = __CELEBRATE__;
+  const SHOW_ANIMATIONS = __ANIMATIONS__;
+  const INITIAL_STATE = "__STATE__";
 
   let audioCtx = null;
   let audioReady = false;
@@ -266,6 +360,7 @@ body { margin:0; background: transparent; }
   function setState(nextState) {
     const safeState = nextState || 'idle';
     mascot.dataset.state = safeState;
+
     const mouthMap = {
       idle: 'M46 92 Q60 99 74 92',
       happy: 'M46 90 Q60 101 74 90',
@@ -278,14 +373,66 @@ body { margin:0; background: transparent; }
       speaking: 'M44 92 Q60 108 76 92',
       achievement: 'M46 90 Q60 104 74 90',
     };
+
     mouth.setAttribute('d', mouthMap[safeState] || mouthMap.idle);
-    mascot.classList.remove('mascot-idle', 'mascot-bounce', 'mascot-celebrate', 'mascot-nudge', 'mascot-state-transition');
+
+    mascot.classList.remove(
+      'mascot-idle',
+      'mascot-bounce',
+      'mascot-celebrate',
+      'mascot-nudge',
+      'mascot-state-transition',
+      'mascot-drinking',
+      'mascot-happy',
+      'mascot-excited',
+      'mascot-warning',
+      'mascot-sad',
+      'mascot-thinking',
+      'mascot-listening',
+      'mascot-speaking'
+    );
+
     mascot.classList.add('mascot-state-transition');
-    if (safeState === 'idle') mascot.classList.add('mascot-idle');
-    if (safeState === 'achievement') mascot.classList.add('mascot-celebrate');
-    if (safeState === 'happy') mascot.classList.add('mascot-bounce');
-    if (safeState === 'drinking') mascot.classList.add('mascot-bounce');
-    setTimeout(() => mascot.classList.remove('mascot-state-transition'), 260);
+
+    if (SHOW_ANIMATIONS) {
+      const stateClass = {
+        idle: 'mascot-idle',
+        happy: 'mascot-happy',
+        drinking: 'mascot-drinking',
+        excited: 'mascot-excited',
+        warning: 'mascot-warning',
+        sad: 'mascot-sad',
+        thinking: 'mascot-thinking',
+        listening: 'mascot-listening',
+        speaking: 'mascot-speaking',
+        achievement: 'mascot-celebrate',
+      }[safeState];
+
+      if (stateClass) mascot.classList.add(stateClass);
+    }
+
+    // State-specific facial/body reactions
+    if (safeState === 'warning' || safeState === 'sad') {
+      mascot.style.filter = 'saturate(0.72)';
+      mascot.style.transform = 'translateY(4px) rotate(-2deg)';
+      shadow.style.transform = 'translateX(-50%) scale(0.88)';
+    } else if (safeState === 'excited' || safeState === 'achievement') {
+      mascot.style.filter = 'saturate(1.18)';
+      mascot.style.transform = 'translateY(-5px) scale(1.04)';
+      shadow.style.transform = 'translateX(-50%) scale(1.12)';
+    } else if (safeState === 'drinking') {
+      mascot.style.filter = 'saturate(1.08)';
+      mascot.style.transform = 'translateY(2px) scale(0.98)';
+      shadow.style.transform = 'translateX(-50%) scale(0.96)';
+    } else {
+      mascot.style.filter = '';
+      mascot.style.transform = '';
+      shadow.style.transform = 'translateX(-50%) scale(1)';
+    }
+
+    setTimeout(() => {
+      mascot.classList.remove('mascot-state-transition');
+    }, 260);
   }
 
   function initAudio() {
@@ -425,9 +572,19 @@ body { margin:0; background: transparent; }
   setTimeout(() => {
     try {
       initAudio();
-      if (LAST_LOGGED) { happy(); }
-      if (CELEBRATE) { setTimeout(() => celebrateNow(), 160); }
-      else { setState('idle'); }
+
+      // IMPORTANT: use the state supplied by Python.
+      // Do not reset every mascot to idle.
+      if (CELEBRATE && SHOW_ANIMATIONS) {
+        setTimeout(() => celebrateNow(), 160);
+      } else if (LAST_LOGGED) {
+        setState('drinking');
+        setTimeout(() => {
+          setState(INITIAL_STATE || 'idle');
+        }, 650);
+      } else {
+        setState(INITIAL_STATE || 'idle');
+      }
     } catch (e) {}
   }, 120);
 
@@ -460,6 +617,7 @@ body { margin:0; background: transparent; }
     html = html.replace("__SOUND_ENABLED__", str(snd_on).lower())
     html = html.replace("__LAST_LOGGED__", str(int(last_logged)))
     html = html.replace("__CELEBRATE__", str(bool(celebrate)).lower())
+    html = html.replace("__ANIMATIONS__", str(bool(show_animations)).lower())
     from .utils import render_embedded_html
 
     render_embedded_html(html, height=180)

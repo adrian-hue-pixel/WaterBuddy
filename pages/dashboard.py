@@ -67,29 +67,123 @@ def render_dashboard_page() -> None:
                 st.rerun()
             else:
                 st.rerun_func()
+    # Achievement unlocks are collected before rendering the mascot,
+    # so every newly unlocked achievement can trigger its celebration.
+    new_achievements = st.session_state.pop("_new_achievements", [])
+    achievement_celebrate = bool(new_achievements)
+
+    if achievement_celebrate:
+        ms.trigger_event(
+            "achievement_unlocked",
+            hydration_percentage=int(percent),
+        )
+
+    force_celebrate = bool(
+        st.session_state.pop("_force_mascot_celebrate", False)
+    )
+
     with right:
-        render_progress_visual(percent, intake_ml, goal_ml, celebrate=hit_milestone)
+        render_progress_visual(
+            percent,
+            intake_ml,
+            goal_ml,
+            celebrate=hit_milestone or achievement_celebrate,
+        )
         st.progress(percent / 100)
         st.caption(f"{percent}% of your {goal_ml} ml goal")
-        # Mascot: reacts to logs and celebrations
-        if hit_milestone:
-            ms.trigger_event('achievement_unlocked', hydration_percentage=percent)
-        render_mascot(snd_on=st.session_state.get('sound_on', True), last_logged=st.session_state.get('last_logged_amount', 0), celebrate=hit_milestone)
 
-        # Dev helper: trigger a celebration manually for testing (visible while debugging)
-        if st.button("Trigger celebration (dev)", key="dev_trigger_celebrate"):
-            # Trigger the mascot service event and force a one-shot celebrate flag
-            ms.trigger_event('achievement_unlocked', hydration_percentage=100)
-            st.session_state['_force_mascot_celebrate'] = True
-            if hasattr(st, "rerun"):
-                st.rerun()
-            else:
-                st.rerun_func()
+        render_mascot(
+            snd_on=st.session_state.get("sound_on", True),
+            last_logged=st.session_state.get("last_logged_amount", 0),
+            celebrate=(
+                hit_milestone
+                or achievement_celebrate
+                or force_celebrate
+            ),
+            show_animations=st.session_state.get("show_animations", True),
+        )
 
-        # Allow forcing celebration via session_state key (cleared after render)
-        force_celebrate = False
-        if st.session_state.get('_force_mascot_celebrate'):
-            force_celebrate = bool(st.session_state.pop('_force_mascot_celebrate', False))
+    # Achievement unlock celebration
+
+        names = {
+            "first_sip": "First Sip",
+            "500ml": "Getting Started",
+            "1000ml": "Hydration Rookie",
+            "halfway": "Halfway There",
+            "75percent": "Hydration Hero",
+            "goal": "Goal Crusher",
+            "125percent": "Overachiever",
+            "2day": "Two-Day Flow",
+            "3day": "Three-Day Sprout",
+            "7day": "One Week Strong",
+            "14day": "Two Week Flow",
+            "30day": "30-Day Wave",
+            "50day": "50-Day Splash",
+            "75day": "Hydration Veteran",
+            "100day": "100-Day Legend",
+            "150day": "Hydration Dragon",
+            "182day": "Half-Year Hero",
+            "250day": "Water Warrior",
+            "365day": "365-Day Water Legend",
+            "early_bird": "Early Bird",
+            "night_owl": "Night Owl",
+            "comeback": "Comeback Kid",
+            "perfect_week": "Perfect Week",
+            "perfect_month": "Perfect Month",
+        }
+
+        unlocked_names = [names.get(a, a) for a in new_achievements]
+
+        st.success(
+            "🏆 Achievement unlocked!  "
+            + ", ".join(unlocked_names)
+        )
+
+        st.markdown(
+            """
+            <div class="achievement-confetti">
+                <span>💧</span><span>✨</span><span>🎉</span>
+                <span>💧</span><span>🏆</span><span>✨</span>
+                <span>💧</span><span>🎉</span><span>💧</span>
+            </div>
+            <style>
+            .achievement-confetti {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 999999;
+                overflow: hidden;
+            }
+            .achievement-confetti span {
+                position: absolute;
+                top: -40px;
+                font-size: 24px;
+                animation: wb-confetti-fall 2.5s linear forwards;
+            }
+            .achievement-confetti span:nth-child(1) { left: 8%; animation-delay: .0s; }
+            .achievement-confetti span:nth-child(2) { left: 18%; animation-delay: .2s; }
+            .achievement-confetti span:nth-child(3) { left: 30%; animation-delay: .1s; }
+            .achievement-confetti span:nth-child(4) { left: 42%; animation-delay: .35s; }
+            .achievement-confetti span:nth-child(5) { left: 54%; animation-delay: .05s; }
+            .achievement-confetti span:nth-child(6) { left: 66%; animation-delay: .25s; }
+            .achievement-confetti span:nth-child(7) { left: 75%; animation-delay: .15s; }
+            .achievement-confetti span:nth-child(8) { left: 86%; animation-delay: .4s; }
+            .achievement-confetti span:nth-child(9) { left: 94%; animation-delay: .3s; }
+
+            @keyframes wb-confetti-fall {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(105vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
 
     st.markdown("### Your day so far")
     stat_cols = st.columns(3)

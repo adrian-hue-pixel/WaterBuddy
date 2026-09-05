@@ -52,15 +52,58 @@ def render_profile_page() -> None:
         st.session_state["goal_ml"] = suggested_goal
 
     name = st.text_input("Name", value=st.session_state.get("profile_name", ""), key="profile_name")
-    # Allow user to override the suggested goal; mark goal_override if changed manually
-    goal_ml = st.number_input(
-        "Daily hydration goal (ml)",
-        min_value=1000,
-        max_value=5000,
-        step=50,
-        value=int(st.session_state.get("goal_ml", suggested_goal)),
-        key="goal_ml",
-    )
+    # Hydration goal controls: manual entry + reliable +/- buttons.
+    if "goal_ml" not in st.session_state:
+        st.session_state["goal_ml"] = suggested_goal
+
+    if "goal_ml_input" not in st.session_state:
+        st.session_state["goal_ml_input"] = int(st.session_state["goal_ml"])
+
+    current_goal = int(st.session_state.get("goal_ml_input", suggested_goal))
+    current_goal = max(1000, min(5000, current_goal))
+
+    st.markdown("**Daily hydration goal (ml)**")
+
+    def _decrease_goal():
+        new_goal = max(1000, int(st.session_state.get("goal_ml_input", current_goal)) - 50)
+        st.session_state["goal_ml_input"] = new_goal
+        st.session_state["goal_ml"] = new_goal
+        st.session_state["goal_override"] = True
+
+    def _increase_goal():
+        new_goal = min(5000, int(st.session_state.get("goal_ml_input", current_goal)) + 50)
+        st.session_state["goal_ml_input"] = new_goal
+        st.session_state["goal_ml"] = new_goal
+        st.session_state["goal_override"] = True
+
+    goal_cols = st.columns([1, 3, 1])
+
+    with goal_cols[0]:
+        st.button(
+            "−",
+            key="goal_minus",
+            use_container_width=True,
+            on_click=_decrease_goal,
+        )
+
+    with goal_cols[1]:
+        goal_ml = st.number_input(
+            "Daily hydration goal (ml)",
+            min_value=1000,
+            max_value=5000,
+            step=50,
+            key="goal_ml_input",
+            label_visibility="collapsed",
+        )
+        st.session_state["goal_ml"] = int(goal_ml)
+
+    with goal_cols[2]:
+        st.button(
+            "+",
+            key="goal_plus",
+            use_container_width=True,
+            on_click=_increase_goal,
+        )
 
     if int(goal_ml) != suggested_goal:
         st.session_state["goal_override"] = True

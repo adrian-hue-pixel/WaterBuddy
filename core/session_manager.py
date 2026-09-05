@@ -28,7 +28,7 @@ def ensure_session_state() -> None:
     defaults = {
         # 'theme' is the base theme variant: 'water', 'sun', or 'green'
         "theme": "water",
-        "dark_mode": False,
+        "dark_mode": True,
         # mascot_variant will be kept in sync with the selected base theme
         "mascot_variant": "aqua",
         "authenticated": False,
@@ -48,6 +48,7 @@ def ensure_session_state() -> None:
         "weather_city": "London",
         "weather_units": "metric",
         "sound_on": True,
+        "show_animations": True,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -60,7 +61,7 @@ def ensure_session_state() -> None:
 
     # Ensure dark_mode exists as an independent boolean
     if "dark_mode" not in st.session_state:
-        st.session_state["dark_mode"] = False
+        st.session_state["dark_mode"] = True
 
     # Keep mascot in sync with the base theme unless user explicitly set a different mascot
     theme_to_mascot = {

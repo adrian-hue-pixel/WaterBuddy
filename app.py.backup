@@ -272,6 +272,10 @@ def main() -> None:
             theme = str(persisted.get("theme", "water")).lower()
             if theme in {"water", "sun", "green", "neon", "yin_yang"}:
                 st.session_state["theme"] = theme
+            if "dark_mode" in persisted:
+                st.session_state["dark_mode"] = bool(persisted.get("dark_mode", True))
+        elif persisted is not None:
+            st.session_state["dark_mode"] = bool(persisted)
     except Exception:
         pass
 
@@ -336,6 +340,18 @@ def main() -> None:
             params = {}
         # Support a test automation action hook via ?wb_action=... (keeps legacy behavior)
         test_action = params.get('wb_action', [None])[0] if params else None
+        # Also accept ?wb_dark=1 or ?wb_dark=true to safely request dark mode from Settings
+        wb_dark_param = params.get('wb_dark', [None])[0] if params else None
+        if wb_dark_param is not None:
+            try:
+                requested = str(wb_dark_param).lower()
+                if requested in ("1", "true", "yes", "on"):
+                    st.session_state['dark_mode'] = True
+                else:
+                    st.session_state['dark_mode'] = False
+            except Exception:
+                logger.exception("failed to apply wb_dark param")
+
         if test_action:
             if test_action.startswith('btn:+'):
                 # e.g. wb_action=btn:+250

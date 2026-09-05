@@ -85,12 +85,76 @@ def update_daily_intake(amount_ml: int, source: str) -> tuple[int, int]:
     # Notify mascot service about the new hydration percentage so visuals react
     try:
         ms = get_mascot_service()
-        ms.trigger_event('water_logged', hydration_percentage=percent)
-        # If the user reached or exceeded goal, trigger achievement
-        if percent >= 100:
-            ms.trigger_event('achievement_unlocked', hydration_percentage=percent)
+        ms.trigger_event("water_logged", hydration_percentage=percent)
+
+        # Check achievement progress whenever water is logged.
+        # Only celebrate achievements that became newly unlocked.
+        from database.manager import get_recent_history
+        from datetime import date as _date
+
+        history = get_recent_history(days=365, user_id=user_id)
+
+        today_total = intake
+        best_percent = max(
+            (
+                int(round((int(item.get("total_ml", 0)) / max(goal, 1)) * 100))
+                for item in history
+            ),
+            default=percent,
+        )
+
+        seen_days = {
+            item.get("intake_date")
+            for item in history
+            if int(item.get("total_ml", 0)) >= goal
+        }
+
+        current = _date.today()
+        streak = 0
+        while current.strftime("%Y-%m-%d") in seen_days:
+            streak += 1
+            current -= timedelta(days=1)
+
+        newly_unlocked = []
+
+        achievement_rules = [
+            ("first_sip", today_total >= 250),
+            ("getting_started", today_total >= 500),
+            ("hydration_rookie", today_total >= 1000),
+            ("halfway", percent >= 50),
+            ("hydration_hero", percent >= 75),
+            ("goal_crusher", percent >= 100),
+            ("overachiever", percent >= 125),
+            ("two_day", streak >= 2),
+            ("three_day", streak >= 3),
+            ("week", streak >= 7),
+            ("two_week", streak >= 14),
+            ("30day", streak >= 30),
+            ("50day", streak >= 50),
+            ("75day", streak >= 75),
+            ("100day", streak >= 100),
+            ("150day", streak >= 150),
+            ("182day", streak >= 182),
+            ("250day", streak >= 250),
+            ("365day", streak >= 365),
+        ]
+
+        previous = st.session_state.setdefault("_unlocked_achievements", set())
+
+        for achievement_id, unlocked in achievement_rules:
+            if unlocked and achievement_id not in previous:
+                newly_unlocked.append(achievement_id)
+                previous.add(achievement_id)
+
+        if newly_unlocked:
+            st.session_state["_new_achievements"] = newly_unlocked
+            ms.trigger_event(
+                "achievement_unlocked",
+                hydration_percentage=percent,
+            )
+
     except Exception:
-        # Mascot service is non-critical; never let mascot errors block hydration logging
+        # Achievement/mascot effects are non-critical.
         pass
 
     return intake, goal

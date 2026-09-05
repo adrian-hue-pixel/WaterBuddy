@@ -109,20 +109,34 @@ def render_analytics_page() -> None:
         values = [int(item.get("total_ml", 0) or 0) for item in ordered_history]
         goal = int(st.session_state.get("goal_ml", 2500))
 
+        st.markdown(
+            f"""
+            <div style="
+                margin: 1.2rem 0 0.6rem 0;
+                font-size: 1.35rem;
+                font-weight: 800;
+                color: {palette["text"]};
+                letter-spacing: 0.08em;
+            ">GRAPH</div>
+            """,
+            unsafe_allow_html=True,
+        )
+
         fig = go.Figure()
+
         fig.add_trace(
-            go.Scatter(
+            go.Bar(
                 x=dates,
                 y=values,
-                mode="lines+markers",
                 name="Daily intake",
-                line=dict(color=palette["primary"], width=3, shape="spline", smoothing=0.7),
-                marker=dict(size=9, color=palette["primary"], line=dict(color=palette["accent"], width=2)),
-                fill="tozeroy",
-                fillcolor=palette["area"],
+                marker=dict(
+                    color=palette["primary"],
+                    line=dict(color=palette["accent"], width=1),
+                ),
                 hovertemplate="%{x}<br>%{y:.0f} ml<extra></extra>",
             )
         )
+
         fig.add_hline(
             y=goal,
             line_dash="dot",
@@ -130,34 +144,57 @@ def render_analytics_page() -> None:
             line_width=2,
             annotation_text="Goal",
             annotation_position="right top",
-            annotation_font=dict(color=palette["goal"], size=11),
+            annotation_font=dict(
+                color=palette["goal"],
+                size=11,
+            ),
         )
 
         fig.update_layout(
-            height=360,
-            margin=dict(l=20, r=20, t=10, b=30),
+            height=380,
+            margin=dict(l=20, r=20, t=25, b=40),
             paper_bgcolor=palette["bg"],
             plot_bgcolor=palette["bg"],
-            hovermode="x unified",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0, font=dict(color=palette["muted"])),
-            font=dict(color=palette["text"], family="sans-serif"),
+            hovermode="x",
+            font=dict(
+                color=palette["text"],
+                family="sans-serif",
+            ),
+            showlegend=False,
             xaxis=dict(
                 title="Day",
-                title_font=dict(color=palette["muted"]),
-                tickfont=dict(color=palette["muted"]),
+                title_font=dict(
+                    color=palette["text"],
+                    size=13,
+                ),
+                tickfont=dict(
+                    color=palette["text"],
+                    size=12,
+                ),
                 gridcolor=palette["grid"],
                 zeroline=False,
                 showline=False,
             ),
             yaxis=dict(
                 title="Intake (ml)",
-                title_font=dict(color=palette["muted"]),
-                tickfont=dict(color=palette["muted"]),
+                title_font=dict(
+                    color=palette["text"],
+                    size=13,
+                ),
+                tickfont=dict(
+                    color=palette["text"],
+                    size=12,
+                ),
                 gridcolor=palette["grid"],
                 zeroline=False,
                 rangemode="tozero",
             ),
         )
-        st.plotly_chart(fig, use_container_width=True, theme=None)
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
+            theme=None,
+        )
     else:
         st.info("No hydration history yet — start logging and your weekly trend will appear here.")

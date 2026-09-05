@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 
 import streamlit as st
+from datetime import date
 
 from components.cards import render_hero_banner
 from core.session_manager import safe_rerun
@@ -10,6 +11,22 @@ from services.weather import fetch_weather
 from services.voice import VoiceService
 from services.mascot_service import get_mascot_service
 
+
+
+
+def _voice_daily_limit():
+    today = str(date.today())
+    if st.session_state.get("ai_usage_date") != today:
+        st.session_state["ai_usage_date"] = today
+        st.session_state["ai_usage_count"] = 0
+    return int(st.session_state.get("ai_usage_count", 0))
+
+
+def _use_voice_request():
+    _voice_daily_limit()
+    st.session_state["ai_usage_count"] = int(
+        st.session_state.get("ai_usage_count", 0)
+    ) + 1
 
 def _reset_voice_state() -> None:
     for key in [
@@ -88,6 +105,16 @@ def render_voice_assistant_page() -> None:
         unsafe_allow_html=True,
     )
 
+    voice_usage = _voice_daily_limit()
+    voice_limited = voice_usage >= 2
+
+    st.info(
+        f"🚧 Voice Assistant is still in development. Shared AI uses today: {voice_usage}/2"
+    )
+
+    if voice_limited:
+        st.warning("COME AGAIN TMRW UNTIL THEN DRINK WATER!")
+
     st.markdown(
         """
         <div style='margin-bottom: 1rem;'>
@@ -104,7 +131,11 @@ def render_voice_assistant_page() -> None:
     st.markdown("---")
 
     try:
-        audio_input = st.audio_input("Tap the microphone to record a question", sample_rate=16000)
+        audio_input = st.audio_input(
+                "Tap the microphone to record a question",
+                sample_rate=16000,
+                disabled=voice_limited,
+            )
     except Exception as exc:  # pragma: no cover - browser may not support audio input widget
         st.error(
             "Microphone input is unavailable in this browser. Please allow microphone access, try a supported browser, or refresh the page."
@@ -180,7 +211,8 @@ def render_voice_assistant_page() -> None:
             remaining = int(retry_until - now)
             st.warning(f"AI service is rate-limited. Please try again in {remaining} seconds.")
         else:
-            if st.button("Send to WaterBuddy"):
+            if st.button("Send to WaterBuddy", disabled=voice_limited):
+                _use_voice_request()
                 ms = get_mascot_service()
                 ms.trigger_event('ai_thinking')
                 with st.spinner("Thinking..."):

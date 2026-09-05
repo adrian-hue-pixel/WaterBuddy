@@ -1,12 +1,29 @@
 from __future__ import annotations
 
 import streamlit as st
+from datetime import date
 
 from components.cards import render_hero_banner
 from core.session_manager import safe_rerun
 from services.ai import get_ai_response
 from services.mascot_service import get_mascot_service
 
+
+
+
+def _ai_daily_limit():
+    today = str(date.today())
+    if st.session_state.get("ai_usage_date") != today:
+        st.session_state["ai_usage_date"] = today
+        st.session_state["ai_usage_count"] = 0
+    return int(st.session_state.get("ai_usage_count", 0))
+
+
+def _use_ai_request():
+    _ai_daily_limit()
+    st.session_state["ai_usage_count"] = int(
+        st.session_state.get("ai_usage_count", 0)
+    ) + 1
 
 def _render_chat_history() -> None:
     history = st.session_state.setdefault("ai_chat_history", [])
@@ -40,14 +57,28 @@ def render_ai_coach_page() -> None:
     st.markdown("### Chat with WaterBuddy")
     _render_chat_history()
 
+    usage = _ai_daily_limit()
+    limited = usage >= 2
+
+    st.info(
+        f"🚧 AI Coach is still in development. Daily uses: {usage}/2"
+    )
+
+    if limited:
+        st.warning("COME AGAIN TMRW UNTIL THEN DRINK WATER!")
+
     if hasattr(st, "chat_input"):
-        user_prompt = st.chat_input("Ask WaterBuddy anything about hydration")
+        user_prompt = st.chat_input(
+            "Ask WaterBuddy anything about hydration",
+            disabled=limited,
+        )
         send_request = bool(user_prompt and user_prompt.strip())
     else:
         user_prompt = st.text_input("Ask WaterBuddy anything about hydration", key="ai_chat_input")
         send_request = st.button("Send") and bool(user_prompt and user_prompt.strip())
 
     if send_request:
+        _use_ai_request()
         ms = get_mascot_service()
         ms.trigger_event('ai_thinking')
         with st.spinner("WaterBuddy is thinking..."):
