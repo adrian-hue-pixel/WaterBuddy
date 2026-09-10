@@ -41,12 +41,23 @@ def render_settings_page() -> None:
 
         st.checkbox("Show animated progress", value=bool(st.session_state.get("show_animations", True)), key="show_animations")
         st.checkbox("Enable mascot sounds", value=st.session_state.get('sound_on', True), key="sound_on")
+
+        current_mode = "Dark" if bool(st.session_state.get("dark_mode", True)) else "Light"
+        mode_options = ["Dark", "Light"]
+
+        selected_mode = st.selectbox(
+            "Appearance",
+            mode_options,
+            index=mode_options.index(current_mode),
+            key="settings_appearance",
+        )
         # Weather inputs removed — OpenWeather integration no longer used.
         st.info("API keys are read from .env and never stored in code. Make sure GEMINI_API_KEY is present for AI features.")
 
         submitted = st.form_submit_button("Save changes")
         if submitted:
             st.session_state["theme"] = selected_theme_key
+            st.session_state["dark_mode"] = selected_mode == "Dark"
             sync_theme_state()
             try:
                 from database.manager import set_persisted_theme

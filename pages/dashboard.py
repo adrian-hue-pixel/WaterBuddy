@@ -8,12 +8,23 @@ from components.cards import render_hero_banner, render_stat_card
 from components.hydrate_visual import render_progress_visual
 from components.mascot_v2 import render_mascot
 from services.mascot_service import get_mascot_service
-from services.hydration import calculate_progress, get_milestone_message, get_tip, sync_today_total, update_daily_intake
+from services.ai import get_hydration_autopilot
+from services.hydration_twin import get_hydration_twin
+from services.goal_optimizer import get_goal_optimizer_summary
+from services.context_engine import get_context_snapshot
+from services.hydration import (
+    calculate_progress,
+    get_hydration_prediction,
+    get_hydration_records,
+    get_milestone_message,
+    get_tip,
+    sync_today_total,
+    update_daily_intake,
+)
 from services.personalization import get_age_aesthetic
 
 
 def render_dashboard_page() -> None:
-    from core.session_manager import safe_rerun
     render_hero_banner(
         "Your hydration rhythm",
         "A calm command center for progress, coaching, and steady momentum.",
@@ -37,7 +48,11 @@ def render_dashboard_page() -> None:
 
     left, right = st.columns([1.2, 0.9], gap="large")
     with left:
-        st.markdown("### Quick log")
+        st.markdown(
+        '<div class="wb-section-kicker">DAILY HYDRATION</div>'
+        '<h2 class="wb-section-title">Quick log</h2>',
+        unsafe_allow_html=True,
+    )
         controls = st.columns([1, 1, 1])
         ms = get_mascot_service()
         if controls[0].button("+250 ml", use_container_width=True):
@@ -103,8 +118,9 @@ def render_dashboard_page() -> None:
             show_animations=st.session_state.get("show_animations", True),
         )
 
-    # Achievement unlock celebration
 
+    # Achievement unlock celebration
+    if achievement_celebrate:
         names = {
             "first_sip": "First Sip",
             "500ml": "Getting Started",
@@ -185,7 +201,71 @@ def render_dashboard_page() -> None:
             unsafe_allow_html=True,
         )
 
-    st.markdown("### Your day so far")
+
+    # Hydration prediction
+    prediction = get_hydration_prediction()
+    records = get_hydration_records()
+    profile_name = st.session_state.get("profile_name", "friend")
+
+    st.markdown(
+        """
+        <div class="wb-prediction-header">
+            <div>
+                <div class="wb-section-kicker">INTELLIGENCE</div>
+                <h2 class="wb-section-title">Hydration prediction</h2>
+                <p class="wb-section-subtitle">
+                    A live look at where your hydration rhythm is heading.
+                </p>
+            </div>
+            <div class="wb-live-pill">● LIVE</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    forecast_html = f"""
+    <div class="wb-forecast-panel">
+        <div class="wb-forecast-topline">
+            <div>
+                <div class="wb-forecast-label">LIVE FORECAST</div>
+                <div class="wb-forecast-title">Your hydration trajectory</div>
+            </div>
+            <div class="wb-forecast-status">
+                {prediction["status_icon"]} {prediction["status"]}
+            </div>
+        </div>
+
+        <div class="wb-forecast-grid">
+            <div class="wb-forecast-item">
+                <span>Current pace</span>
+                <strong>{prediction["pace_ml_per_hour"]:,} <small>ml/hr</small></strong>
+            </div>
+
+            <div class="wb-forecast-item">
+                <span>Projected intake</span>
+                <strong>{prediction["projected_intake_ml"]:,} <small>ml</small></strong>
+            </div>
+
+            <div class="wb-forecast-item">
+                <span>Today's target</span>
+                <strong>{prediction["goal_ml"]:,} <small>ml</small></strong>
+            </div>
+        </div>
+    </div>
+    """
+
+    st.html(forecast_html)
+
+    if prediction["hours_to_goal"] is not None:
+        hours = prediction["hours_to_goal"]
+        st.caption(f"Estimated time to goal at your current pace: {hours:.1f} hours")
+
+
+    st.markdown(
+        '<div class="wb-section-kicker">TODAY</div>'
+        '<h2 class="wb-section-title">Your day so far</h2>',
+        unsafe_allow_html=True,
+    )
     stat_cols = st.columns(3)
     with stat_cols[0]:
         render_stat_card("Intake", f"{intake_ml} ml", "primary")
@@ -194,5 +274,9 @@ def render_dashboard_page() -> None:
     with stat_cols[2]:
         render_stat_card("Goal", f"{percent}%", "primary")
 
-    st.markdown("#### Gentle tip")
+    st.markdown(
+        '<div class="wb-section-kicker">A LITTLE NUDGE</div>'
+        '<h3 class="wb-tip-title">Gentle tip</h3>',
+        unsafe_allow_html=True,
+    )
     st.info(get_tip(st.session_state.get("age_group", "19–50")))

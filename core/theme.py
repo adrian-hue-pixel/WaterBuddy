@@ -124,8 +124,8 @@ def apply_theme(dark_override: bool | None = None) -> None:
             }
         else:
             final = {
-                "--bg": "#f3fbff",
-                "--bg-end": "#e8f6ff",
+                "--bg": "#effaf4",
+                "--bg-end": "#dcf4e6",
                 "--surface": "rgba(255, 255, 255, 0.88)",
                 "--surface-alt": "rgba(237, 247, 255, 0.78)",
                 "--text": "#11314d",

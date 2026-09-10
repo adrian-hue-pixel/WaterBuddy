@@ -62,14 +62,3 @@ def ensure_session_state() -> None:
     # Ensure dark_mode exists as an independent boolean
     if "dark_mode" not in st.session_state:
         st.session_state["dark_mode"] = True
-
-    # Keep mascot in sync with the base theme unless user explicitly set a different mascot
-    theme_to_mascot = {
-        "water": "aqua",
-        "sun": "sunrise",
-        "green": "forest",
-        "neon": "neon",
-        "yin_yang": "yin_yang",
-    }
-    if "mascot_variant" not in st.session_state or st.session_state.get("mascot_variant") not in set(theme_to_mascot.values()):
-        st.session_state["mascot_variant"] = theme_to_mascot.get(st.session_state.get("theme", "water"), "aqua")

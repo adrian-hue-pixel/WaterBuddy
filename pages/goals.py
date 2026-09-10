@@ -18,3 +18,22 @@ def app():
     st.markdown('---')
     st.write('Why set a goal?')
     st.write('A daily goal helps build consistent hydration habits. Adjust for activity, climate, and body size.')
+
+
+    st.markdown("### Goal progress")
+
+    goal = int(st.session_state.get("goal_ml", 2500))
+    intake = int(st.session_state.get("daily_intake_ml", 0))
+    progress = min(int((intake / goal) * 100), 100) if goal > 0 else 0
+
+    st.progress(progress / 100)
+    st.caption(f"{intake:,} ml / {goal:,} ml · {progress}% complete")
+
+    if progress >= 100:
+        st.success("🏆 Daily hydration goal complete!")
+    elif progress >= 75:
+        st.info("🔥 You're 75% of the way there!")
+    elif progress >= 50:
+        st.info("💧 Halfway there — keep going!")
+    elif progress >= 25:
+        st.info("🌊 Great start — keep building your progress!")

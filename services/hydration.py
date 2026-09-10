@@ -236,3 +236,129 @@ class HydrationService:
     def get_history(self):
         user_id = st.session_state.get("user_id")
         return get_recent_history(days=365, user_id=user_id)
+
+
+def get_hydration_prediction() -> dict:
+    """Estimate today's hydration trajectory from the user's current pace."""
+    now = datetime.now()
+    intake, goal = sync_today_total()
+
+    start_hour = 7
+    end_hour = 23
+    current_minutes = now.hour * 60 + now.minute
+    start_minutes = start_hour * 60
+
+    elapsed_minutes = max(current_minutes - start_minutes, 1)
+    total_minutes = (end_hour - start_hour) * 60
+
+    pace_ml_per_hour = (intake / elapsed_minutes) * 60
+    projected_intake = int(round(pace_ml_per_hour * total_minutes))
+
+    remaining = max(goal - intake, 0)
+
+    if intake >= goal:
+        status = "Goal reached"
+        status_icon = "🏆"
+    elif projected_intake >= goal:
+        status = "On track"
+        status_icon = "🟢"
+    elif projected_intake >= goal * 0.8:
+        status = "Close to target"
+        status_icon = "🟡"
+    else:
+        status = "Behind pace"
+        status_icon = "🔵"
+
+    if pace_ml_per_hour > 0 and remaining > 0:
+        hours_to_goal = remaining / pace_ml_per_hour
+    else:
+        hours_to_goal = None
+
+    return {
+        "intake_ml": intake,
+        "goal_ml": goal,
+        "remaining_ml": remaining,
+        "pace_ml_per_hour": int(round(pace_ml_per_hour)),
+        "projected_intake_ml": projected_intake,
+        "status": status,
+        "status_icon": status_icon,
+        "hours_to_goal": hours_to_goal,
+    }
+
+
+def get_hydration_records() -> dict:
+    """Return hydration streak and personal-record statistics."""
+    user_id = st.session_state.get("user_id")
+    history = get_recent_history(days=3650, user_id=user_id)
+
+    goal = int(
+        st.session_state.get(
+            "goal_ml",
+            get_age_goal(st.session_state.get("age_group", "19–50")),
+        )
+    )
+
+    daily_totals = {}
+
+    for item in history:
+        day = item.get("intake_date")
+        if not day:
+            continue
+
+        total = int(item.get("total_ml", 0))
+        daily_totals[day] = max(daily_totals.get(day, 0), total)
+
+    completed_days = {
+        day for day, total in daily_totals.items()
+        if total >= goal
+    }
+
+    today = date.today()
+    current_streak = 0
+    cursor = today
+
+    while cursor.strftime("%Y-%m-%d") in completed_days:
+        current_streak += 1
+        cursor -= timedelta(days=1)
+
+    longest_streak = 0
+    running = 0
+
+    cursor = today - timedelta(days=max(len(daily_totals), 1))
+
+    if daily_totals:
+        dates = sorted(
+            datetime.strptime(day, "%Y-%m-%d").date()
+            for day in completed_days
+        )
+
+        previous = None
+
+        for day in dates:
+            if previous is not None and day == previous + timedelta(days=1):
+                running += 1
+            else:
+                running = 1
+
+            longest_streak = max(longest_streak, running)
+            previous = day
+
+    highest_intake = max(daily_totals.values(), default=0)
+
+    tracked_days = len(daily_totals)
+    completed_count = len(completed_days)
+
+    consistency = (
+        round((completed_count / tracked_days) * 100)
+        if tracked_days
+        else 0
+    )
+
+    return {
+        "current_streak": current_streak,
+        "longest_streak": longest_streak,
+        "highest_intake_ml": highest_intake,
+        "tracked_days": tracked_days,
+        "completed_days": completed_count,
+        "consistency_percent": consistency,
+    }

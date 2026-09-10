@@ -1,11 +1,5 @@
-streamlit>=1.20
-pandas
-altair
-python-dotenv
-requests
-google-generativeai
-SpeechRecognition
-gTTS
-pytest
-pytest-cov
+streamlit
+openai
 plotly
+python-dotenv
+gTTS

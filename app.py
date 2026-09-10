@@ -4,7 +4,6 @@ import streamlit as st
 import logging
 
 from core.navigation import get_navigation_pages
-from components.reminder import render_reminder
 from core.session_manager import ensure_session_state, safe_rerun
 from core.theme import apply_theme, sync_theme_state
 from database.manager import authenticate_user, create_user, initialize_db, get_user_by_id, load_profile
@@ -442,7 +441,6 @@ def main() -> None:
             unsafe_allow_html=True,
         )
 
-    render_reminder()
 
     pages[selected_page]()
 

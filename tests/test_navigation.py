@@ -8,7 +8,19 @@ from core.navigation import get_navigation_pages
 
 def test_navigation_pages_are_available():
     pages = get_navigation_pages()
-    expected = {"Dashboard", "Analytics", "AI Coach", "Voice Assistant", "Achievements", "Profile", "Settings"}
+    expected = {
+        "Dashboard",
+        "Analytics",
+        "AI Coach",
+        "AI Hydration",
+        "Voice Assistant",
+        "Water Scan",
+        "Daily Tasks",
+        "Achievements",
+        "Profile",
+        "Reminder",
+        "Settings",
+    }
     assert set(pages) == expected
 
 

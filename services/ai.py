@@ -273,3 +273,49 @@ def get_ai_response(
         return _generate(api_key, prompt)
     except Exception as exc:
         return _handle_error(exc)
+
+
+def get_hydration_autopilot(
+    profile_name: str,
+    intake_ml: int,
+    goal_ml: int,
+    pace_ml_per_hour: int,
+    projected_intake_ml: int,
+    remaining_ml: int,
+    current_streak: int,
+    weather_summary: str = "",
+) -> str:
+    """Generate a concise next-step hydration recommendation."""
+    api_key = get_setting("OPENROUTER_API_KEY", "")
+
+    if not api_key:
+        return "Add OPENROUTER_API_KEY to enable Hydration Autopilot."
+
+    prompt = f"""
+You are WaterBuddy Hydration Autopilot.
+
+Create a short, friendly hydration plan for {profile_name or "the user"}.
+
+Current data:
+- Intake today: {intake_ml} ml
+- Daily goal: {goal_ml} ml
+- Remaining: {remaining_ml} ml
+- Current pace: {pace_ml_per_hour} ml/hour
+- Projected end-of-day intake: {projected_intake_ml} ml
+- Current goal streak: {current_streak} days
+- Weather: {weather_summary or "not available"}
+
+Give:
+1. Whether the user is currently on track.
+2. One reasonable next hydration action.
+3. One short encouraging sentence.
+
+Keep it concise.
+Do not claim medical certainty.
+Do not encourage excessive water consumption.
+"""
+
+    try:
+        return _generate(api_key, prompt)
+    except Exception as exc:
+        return _handle_error(exc)

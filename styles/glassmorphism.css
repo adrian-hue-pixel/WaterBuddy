@@ -1,867 +1,2473 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
+
+/* =========================================================
+   WATERBUDDY — PREMIUM VISUAL SYSTEM
+   ========================================================= */
 
 :root {
-    color-scheme: light;
-    --bg: #f3fbff;
-    --bg-end: #e8f6ff;
-    --surface: rgba(255, 255, 255, 0.88);
-    --surface-alt: rgba(237, 247, 255, 0.78);
-    --text: #11314d;
-    --muted: #4b647c;
-    --primary: #12b7d6;
-    --accent: #1d63d4;
-    --accent-warm: #f5792c;
-    --border: rgba(17, 49, 77, 0.12);
-    --border-strong: rgba(17, 49, 77, 0.14);
-    --shadow-soft: 0 24px 60px rgba(19, 58, 94, 0.10);
-    --shadow-deep: 0 14px 32px rgba(17, 49, 77, 0.10);
-    --shadow-button: 0 18px 34px rgba(15, 96, 132, 0.18);
-    --glow: rgba(18, 183, 214, 0.16);
-    --primary-rgb: 18, 183, 214;
-    --accent-rgb: 29, 99, 212;
-    --surface-glass: rgba(255, 255, 255, 0.78);
-    --wb-background: #f3fbff;
-    --wb-background-end: #e8f6ff;
-    --wb-surface: rgba(255, 255, 255, 0.88);
-    --wb-surface-alt: rgba(237, 247, 255, 0.78);
-    --wb-text: #11314d;
-    --wb-muted: #4b647c;
-    --wb-primary: #12b7d6;
-    --wb-accent: #1d63d4;
-    --wb-accent-warm: #f5792c;
-    --wb-border: rgba(17, 49, 77, 0.12);
+    --wb-bg: #050b14;
+    --wb-bg-soft: #091321;
+    --wb-surface: rgba(13, 25, 40, 0.72);
+    --wb-surface-strong: rgba(17, 32, 50, 0.88);
+    --wb-border: rgba(160, 220, 255, 0.13);
+    --wb-border-strong: rgba(109, 233, 255, 0.28);
+    --wb-text: #f3fbff;
+    --wb-text-soft: #9bb0c3;
+    --wb-aqua: #6de9ff;
+    --wb-aqua-soft: rgba(109, 233, 255, 0.14);
+    --wb-blue: #5fb0ff;
+    --wb-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+    --wb-radius: 24px;
 }
 
-body, .stApp {
-    min-height: 100vh;
-    background: linear-gradient(180deg, var(--wb-background) 0%, var(--wb-background-end) 100%);
+/* ---------- APP BACKGROUND ---------- */
+
+.stApp {
+    background:
+        radial-gradient(
+            circle at 15% 8%,
+            rgba(109, 233, 255, 0.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 18%,
+            rgba(95, 176, 255, 0.08),
+            transparent 28%
+        ),
+        linear-gradient(
+            145deg,
+            #03070d 0%,
+            #07111d 48%,
+            #050b14 100%
+        );
     color: var(--wb-text);
-    font-family: 'Inter', sans-serif;
 }
 
-body::before {
-    content: '';
+/* subtle cinematic texture */
+.stApp::before {
+    content: "";
     position: fixed;
     inset: 0;
-    z-index: -2;
-    background: radial-gradient(circle at 20% 15%, rgba(45, 212, 232, 0.15), transparent 22%), radial-gradient(circle at 85% 10%, rgba(37, 99, 235, 0.18), transparent 18%), radial-gradient(circle at 60% 80%, rgba(96, 165, 250, 0.16), transparent 25%);
-    filter: blur(80px);
     pointer-events: none;
+    z-index: 0;
+    opacity: 0.20;
+    background:
+        repeating-linear-gradient(
+            125deg,
+            transparent 0,
+            transparent 110px,
+            rgba(109, 233, 255, 0.018) 111px,
+            transparent 113px
+        );
 }
 
-body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -3;
-    background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.11), transparent 22%);
-    pointer-events: none;
+/* ---------- MAIN CONTENT ---------- */
+
+.main .block-container {
+    max-width: 1180px;
+    padding-top: 3rem;
+    padding-bottom: 4rem;
 }
 
-[data-testid='stAppViewContainer'] {
-    background: transparent;
+/* ---------- TYPOGRAPHY ---------- */
+
+.stApp,
+.stApp button,
+.stApp input,
+.stApp textarea,
+.stApp select {
+    font-family:
+        "DM Sans",
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
-[data-testid='stSidebar'] {
-    background: var(--wb-surface);
-    backdrop-filter: blur(20px);
-    border-right: 1px solid var(--wb-border);
-    color: var(--wb-text);
+.stApp h1 {
+    font-size: clamp(2.3rem, 5vw, 4.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+    font-weight: 800;
 }
 
-[data-testid='stSidebar'] .css-1l02zno {
-    padding-top: 1.5rem;
+.stApp h2 {
+    font-size: clamp(1.55rem, 3vw, 2.35rem);
+    letter-spacing: -0.035em;
+    font-weight: 750;
 }
 
-[data-testid='stSidebar'] .stRadio > div > label,
-[data-testid='stSidebar'] .stMarkdown {
-    color: var(--wb-text);
-}
-
-.stTextInput > div > div > input,
-.stSelectbox > div > div > select,
-.stNumberInput > div > div > input,
-.stTextArea textarea {
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    padding: 0.95rem 1rem;
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), var(--shadow-deep);
-}
-
-.stAudioInput {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 1rem;
-    color: var(--text);
-}
-
-.stAudioInput * {
-    color: var(--text) !important;
-}
-
-.stAudioInput button {
-    background: rgba(255, 255, 255, 0.92) !important;
-    color: var(--text) !important;
-}
-
-.stChatMessage,
-.stChatMessage * {
-    color: var(--text) !important;
-}
-
-.stChatMessage .stMarkdown p,
-.stChatMessage .stMarkdown div,
-.stChatMessage .stText {
-    color: var(--text) !important;
-}
-
-.stChatInput textarea,
-.stChatInput input,
-.stChatInput button {
-    background: var(--surface) !important;
-    color: var(--text) !important;
-    border: 1px solid var(--border) !important;
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: var(--muted);
-}
-
-.stButton > button,
-.stDownloadButton > button,
-button[kind='primary'] {
-    border-radius: 999px;
-    padding: 0.9rem 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: linear-gradient(135deg, rgba(var(--primary-rgb), 1), rgba(37, 99, 235, 0.98));
-    color: #ffffff;
+.stApp h3 {
+    letter-spacing: -0.025em;
     font-weight: 700;
-    letter-spacing: 0.01em;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), var(--shadow-button);
-    transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
 }
 
-.stButton > button:hover,
-.stDownloadButton > button:hover,
-button[kind='primary']:hover {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.22), 0 24px 48px rgba(23, 100, 149, 0.22);
+.stApp p,
+.stApp label {
+    color: var(--wb-text-soft);
 }
 
-.stButton > button:active,
-.stDownloadButton > button:active,
-button[kind='primary']:active {
-    transform: translateY(0px) scale(0.99);
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.22), 0 12px 24px rgba(23, 100, 149, 0.18);
+/* ---------- GLASS SURFACES ---------- */
+
+.stApp [data-testid="stVerticalBlockBorderWrapper"] {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.055),
+            rgba(255,255,255,0.018)
+        );
+    border: 1px solid var(--wb-border);
+    border-radius: var(--wb-radius);
+    box-shadow: var(--wb-shadow);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
 }
 
-.stButton > button:focus-visible,
-.stDownloadButton > button:focus-visible,
-button[kind='primary']:focus-visible {
-    outline: 2px solid rgba(45, 212, 232, 0.75);
+/* ---------- METRICS ---------- */
+
+.stApp [data-testid="stMetric"] {
+    padding: 1.2rem 1.35rem;
+    border-radius: 20px;
+    border: 1px solid var(--wb-border);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.015)
+        );
+    box-shadow:
+        inset 0 1px rgba(255,255,255,0.045),
+        0 16px 45px rgba(0,0,0,0.18);
+}
+
+.stApp [data-testid="stMetricLabel"] {
+    color: var(--wb-text-soft);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.stApp [data-testid="stMetricValue"] {
+    color: var(--wb-text);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.stApp button {
+    border-radius: 14px !important;
+    border: 1px solid rgba(109,233,255,0.16) !important;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(109,233,255,0.13),
+            rgba(95,176,255,0.07)
+        ) !important;
+    color: var(--wb-text) !important;
+    font-weight: 700 !important;
+    min-height: 44px;
+    box-shadow:
+        inset 0 1px rgba(255,255,255,0.06),
+        0 10px 30px rgba(0,0,0,0.16);
+}
+
+.stApp button:hover {
+    border-color: var(--wb-border-strong) !important;
+    box-shadow:
+        0 0 0 1px rgba(109,233,255,0.05),
+        0 14px 38px rgba(0,0,0,0.26),
+        0 0 30px rgba(109,233,255,0.07);
+    transform: translateY(-1px);
+}
+
+.stApp button:active {
+    transform: translateY(0);
+}
+
+/* ---------- INPUTS ---------- */
+
+.stApp input,
+.stApp textarea,
+.stApp [data-baseweb="select"] > div {
+    background: rgba(4, 12, 22, 0.72) !important;
+    border: 1px solid var(--wb-border) !important;
+    border-radius: 14px !important;
+    color: var(--wb-text) !important;
+}
+
+.stApp input:focus,
+.stApp textarea:focus {
+    border-color: var(--wb-border-strong) !important;
+    box-shadow: 0 0 0 3px rgba(109,233,255,0.07) !important;
+}
+
+/* ---------- PROGRESS ---------- */
+
+.stApp [data-testid="stProgress"] {
+    margin: 0.7rem 0;
+}
+
+.stApp [data-testid="stProgress"] > div {
+    background: rgba(255,255,255,0.06);
+    border-radius: 999px;
+    height: 9px;
+}
+
+.stApp [data-testid="stProgress"] > div > div {
+    background:
+        linear-gradient(
+            90deg,
+            var(--wb-aqua),
+            var(--wb-blue)
+        );
+    border-radius: 999px;
+    box-shadow: 0 0 18px rgba(109,233,255,0.22);
+}
+
+/* ---------- ALERTS ---------- */
+
+.stApp [data-testid="stAlert"] {
+    border-radius: 18px !important;
+    border: 1px solid var(--wb-border) !important;
+    background: rgba(10, 22, 36, 0.72) !important;
+    box-shadow: 0 14px 38px rgba(0,0,0,0.16);
+}
+
+/* ---------- DIVIDERS ---------- */
+
+.stApp hr {
+    border: 0;
+    height: 1px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(109,233,255,0.16),
+            transparent
+        );
+    margin: 2rem 0;
+}
+
+/* ---------- SIDEBAR ---------- */
+
+.stApp [data-testid="stSidebar"] {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(4,10,18,0.97),
+            rgba(7,17,29,0.97)
+        ) !important;
+    border-right: 1px solid rgba(109,233,255,0.08);
+}
+
+.stApp [data-testid="stSidebar"] button {
+    border: 1px solid transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.stApp [data-testid="stSidebar"] button:hover {
+    background: rgba(109,233,255,0.07) !important;
+    border-color: rgba(109,233,255,0.10) !important;
+}
+
+/* ---------- BRAND / CUSTOM CARDS ---------- */
+
+.wb-brand,
+.wb-ai-card,
+.wb-prediction-card,
+.wb-prediction {
+    border-radius: 26px;
+    border: 1px solid var(--wb-border);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,35,54,0.78),
+            rgba(7,17,29,0.66)
+        );
+    box-shadow:
+        var(--wb-shadow),
+        inset 0 1px rgba(255,255,255,0.045);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+}
+
+/* ---------- AQUA GLOW ---------- */
+
+.wb-aqua-glow {
+    text-shadow:
+        0 0 18px rgba(109,233,255,0.24),
+        0 0 42px rgba(109,233,255,0.08);
+}
+
+/* ---------- REMOVE STREAMLIT CHROME ---------- */
+
+#MainMenu,
+footer,
+header {
+    visibility: hidden;
+}
+
+/* ---------- ACCESSIBILITY ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 768px) {
+    .main .block-container {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    .stApp h1 {
+        font-size: 2.45rem;
+    }
+
+    .stApp h2 {
+        font-size: 1.7rem;
+    }
+
+    .stApp [data-testid="stMetric"] {
+        padding: 1rem;
+    }
+}
+
+/* =========================================================
+   WATERBUDDY — DASHBOARD PREMIUM LAYER
+   ========================================================= */
+
+.wb-section-kicker {
+    margin-top: 1.8rem;
+    margin-bottom: 0.35rem;
+    color: var(--wb-aqua);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.wb-section-title {
+    margin: 0 0 0.7rem 0 !important;
+    color: var(--wb-text);
+    font-size: clamp(1.55rem, 3vw, 2.15rem) !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.045em !important;
+}
+
+.wb-section-subtitle {
+    margin: 0;
+    color: var(--wb-text-soft) !important;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+.wb-prediction-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.1rem;
+}
+
+.wb-prediction-header .wb-section-kicker {
+    margin-top: 0;
+}
+
+.wb-prediction-header .wb-section-title {
+    margin-bottom: 0.35rem !important;
+}
+
+.wb-live-pill {
+    flex-shrink: 0;
+    padding: 0.42rem 0.72rem;
+    border-radius: 999px;
+    border: 1px solid rgba(109, 233, 255, 0.18);
+    background: rgba(109, 233, 255, 0.07);
+    color: var(--wb-aqua);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    box-shadow: 0 0 24px rgba(109, 233, 255, 0.06);
+}
+
+.wb-tip-title {
+    margin-top: 0.15rem !important;
+    margin-bottom: 0.7rem !important;
+    color: var(--wb-text) !important;
+    font-size: 1.25rem !important;
+    letter-spacing: -0.025em !important;
+}
+
+@media (max-width: 640px) {
+    .wb-prediction-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .wb-live-pill {
+        margin-top: 0.25rem;
+    }
+}
+
+
+/* =========================================================
+   WATERBUDDY — PREMIUM HYDRATION WORKSPACE
+   ========================================================= */
+
+.wb-hydration-workspace {
+    position: relative;
+    margin-top: 1.25rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(109, 233, 255, 0.13);
+    border-radius: 30px;
+    background:
+        radial-gradient(
+            circle at 82% 20%,
+            rgba(109, 233, 255, 0.09),
+            transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(16, 34, 52, 0.78),
+            rgba(5, 14, 24, 0.72)
+        );
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.28),
+        inset 0 1px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+.wb-hydration-workspace::after {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    right: -120px;
+    top: -130px;
+    border-radius: 50%;
+    background: rgba(109, 233, 255, 0.055);
+    filter: blur(10px);
+    pointer-events: none;
+}
+
+.wb-log-label {
+    color: var(--wb-text-soft);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 0.65rem;
+}
+
+.wb-log-heading {
+    color: var(--wb-text);
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.35rem;
+}
+
+.wb-log-subtitle {
+    color: var(--wb-text-soft);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin-bottom: 1.1rem;
+}
+
+/* quick action buttons */
+.stApp button {
+    transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        border-color 160ms ease,
+        background 160ms ease !important;
+}
+
+/* custom amount field */
+.stApp [data-testid="stNumberInput"] {
+    margin-top: 0.75rem;
+}
+
+.stApp [data-testid="stNumberInput"] input {
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+/* progress visual area */
+.wb-progress-orbit {
+    position: relative;
+    border-radius: 28px;
+    padding: 1.25rem;
+    background:
+        radial-gradient(
+            circle at 50% 42%,
+            rgba(109, 233, 255, 0.09),
+            transparent 42%
+        );
+}
+
+/* mascot breathing room */
+.wb-progress-orbit img,
+.wb-progress-orbit svg {
+    max-width: 100%;
+}
+
+/* stats become quieter and more premium */
+.wb-stat-card {
+    border: 1px solid var(--wb-border);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.025);
+    padding: 1rem;
+    box-shadow: inset 0 1px rgba(255,255,255,0.035);
+}
+
+/* mobile */
+@media (max-width: 768px) {
+    .wb-hydration-workspace {
+        padding: 1rem;
+        border-radius: 24px;
+    }
+
+    .wb-log-heading {
+        font-size: 1.35rem;
+    }
+}
+
+
+/* =========================================================
+   WATERBUDDY — PREMIUM FORECAST PANEL
+   ========================================================= */
+
+.wb-forecast-panel {
+    position: relative;
+    margin: 0.5rem 0 1rem;
+    padding: 1.45rem;
+    border-radius: 28px;
+    border: 1px solid rgba(109, 233, 255, 0.14);
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(109, 233, 255, 0.095),
+            transparent 34%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(18, 37, 57, 0.82),
+            rgba(6, 16, 27, 0.72)
+        );
+    box-shadow:
+        0 25px 65px rgba(0, 0, 0, 0.24),
+        inset 0 1px rgba(255,255,255,0.05);
+    overflow: hidden;
+}
+
+.wb-forecast-panel::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 42%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        var(--wb-aqua),
+        transparent
+    );
+    opacity: 0.7;
+}
+
+.wb-forecast-topline {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.45rem;
+}
+
+.wb-forecast-label {
+    color: var(--wb-aqua);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+}
+
+.wb-forecast-title {
+    margin-top: 0.3rem;
+    color: var(--wb-text);
+    font-size: 1.25rem;
+    font-weight: 750;
+    letter-spacing: -0.035em;
+}
+
+.wb-forecast-status {
+    flex-shrink: 0;
+    padding: 0.48rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(109, 233, 255, 0.075);
+    border: 1px solid rgba(109, 233, 255, 0.17);
+    color: var(--wb-text);
+    font-size: 0.72rem;
+    font-weight: 750;
+}
+
+.wb-forecast-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.wb-forecast-item {
+    padding: 1rem 1.05rem;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.028);
+    border: 1px solid rgba(255,255,255,0.055);
+}
+
+.wb-forecast-item span {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: var(--wb-text-soft);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.wb-forecast-item strong {
+    color: var(--wb-text);
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.wb-forecast-item small {
+    color: var(--wb-text-soft);
+    font-size: 0.7rem;
+    font-weight: 650;
+    letter-spacing: 0;
+}
+
+@media (max-width: 640px) {
+    .wb-forecast-topline {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .wb-forecast-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   WATERBUDDY — ROUND 1 FINAL DASHBOARD POLISH
+   ========================================================= */
+
+/* ---------- HERO ---------- */
+
+.wb-hero,
+.wb-brand {
+    position: relative;
+    border-radius: 32px !important;
+    border: 1px solid rgba(109, 233, 255, 0.14) !important;
+    background:
+        radial-gradient(
+            circle at 82% 25%,
+            rgba(109, 233, 255, 0.12),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 15% 100%,
+            rgba(95, 176, 255, 0.08),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(18, 39, 59, 0.88),
+            rgba(5, 14, 24, 0.78)
+        ) !important;
+    box-shadow:
+        0 30px 90px rgba(0, 0, 0, 0.32),
+        inset 0 1px rgba(255,255,255,0.06) !important;
+    overflow: hidden;
+}
+
+.wb-hero::after,
+.wb-brand::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    right: -80px;
+    top: -90px;
+    border-radius: 50%;
+    background: rgba(109, 233, 255, 0.07);
+    filter: blur(22px);
+    pointer-events: none;
+}
+
+/* ---------- QUICK LOG / MAIN WORKSPACE ---------- */
+
+.stApp [data-testid="stHorizontalBlock"] {
+    gap: 1rem;
+}
+
+.stApp [data-testid="stColumn"] {
+    min-width: 0;
+}
+
+/* Make the quick-log controls feel like one premium control group */
+.stApp [data-testid="stButton"] button {
+    min-height: 48px;
+    font-size: 0.86rem;
+    letter-spacing: -0.01em;
+}
+
+.stApp [data-testid="stButton"] button:focus-visible {
+    outline: 2px solid rgba(109, 233, 255, 0.45) !important;
     outline-offset: 3px;
 }
 
-.stProgress > div > div > div,
-.stProgress > div > div > div > div {
-    background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.96), rgba(var(--accent-rgb), 0.94));
-    border-radius: 999px;
+/* ---------- PROGRESS VISUAL ---------- */
+
+.stApp [data-testid="stProgress"] {
+    padding: 0.15rem 0;
 }
 
-.stProgress {
-    border-radius: 999px;
-    overflow: hidden;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+.stApp [data-testid="stProgress"] > div {
+    height: 10px !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,0.055) !important;
+    box-shadow: inset 0 1px rgba(0,0,0,0.16);
 }
 
-[data-testid='metric-container'], .stMetric {
-    border-radius: 24px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-soft);
-    padding: 0.9rem 1rem;
+.stApp [data-testid="stProgress"] > div > div {
+    border-radius: 999px !important;
+    background:
+        linear-gradient(
+            90deg,
+            var(--wb-aqua),
+            var(--wb-blue)
+        ) !important;
+    box-shadow:
+        0 0 18px rgba(109,233,255,0.22),
+        0 0 42px rgba(109,233,255,0.07);
 }
 
-.brand-card,
-.stat-card,
-.badge-card,
-.glass-card,
-.hero-card,
-.section-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+/* ---------- MASCOT AREA ---------- */
+
+.wb-mascot-container,
+.wb-mascot-card {
+    position: relative;
     border-radius: 28px;
-    box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.32);
-    backdrop-filter: blur(22px);
-    padding: 1.4rem 1.5rem;
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(109,233,255,0.10),
+            transparent 45%
+        );
+}
+
+/* ---------- DAY SUMMARY ---------- */
+
+.stApp .wb-stat-card {
+    position: relative;
+    min-height: 100px;
+    border-radius: 22px;
+    border: 1px solid rgba(109,233,255,0.10);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.015)
+        );
+    box-shadow:
+        0 16px 45px rgba(0,0,0,0.16),
+        inset 0 1px rgba(255,255,255,0.04);
+}
+
+/* ---------- GENTLE TIP ---------- */
+
+.stApp [data-testid="stAlert"] {
+    position: relative;
+    border-radius: 20px !important;
+    padding: 1rem 1.15rem !important;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(109,233,255,0.065),
+            rgba(255,255,255,0.018)
+        ) !important;
+    border-color: rgba(109,233,255,0.12) !important;
+}
+
+/* ---------- CAPTIONS ---------- */
+
+.stApp [data-testid="stCaptionContainer"] {
+    color: var(--wb-text-soft) !important;
+    font-size: 0.78rem;
+    letter-spacing: 0.01em;
+}
+
+/* ---------- SECTION RHYTHM ---------- */
+
+.stApp .wb-section-kicker + .wb-section-title {
+    margin-bottom: 0.85rem !important;
+}
+
+.stApp .wb-section-title + .wb-section-subtitle {
     margin-bottom: 1rem;
-    transition: transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease;
-    transform-style: preserve-3d;
-    opacity: 0;
-    animation: fade-slide-up 560ms ease forwards;
 }
 
-/* Elevated card shadows: soft ambient + tighter contact shadow */
-.brand-card, .stat-card, .badge-card, .glass-card, .hero-card, .section-card {
-    box-shadow: 0 24px 60px rgba(19,58,94,0.10), 0 6px 12px rgba(19,58,94,0.06);
+/* ---------- PREMIUM SCROLLBAR ---------- */
+
+.stApp ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
 }
 
-.brand-card:hover,
-.stat-card:hover,
-.badge-card:hover,
-.glass-card:hover,
-.hero-card:hover,
-.section-card:hover {
-    transform: translateY(-6px) scale(1.003);
-    box-shadow: 0 36px 78px rgba(19,58,94,0.2), 0 10px 18px rgba(19,58,94,0.08);
+.stApp ::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.02);
 }
 
-.hero-card { animation-delay: 0ms; }
-.glass-card { animation-delay: 80ms; }
-.badge-card { animation-delay: 120ms; }
-.stat-card { animation-delay: 140ms; }
-.section-card { animation-delay: 160ms; }
-
-.brand-card:hover,
-.stat-card:hover,
-.badge-card:hover,
-.glass-card:hover,
-.hero-card:hover,
-.section-card:hover {
-    transform: translateY(-4px) scale(1.003);
-    box-shadow: 0 28px 62px rgba(19, 58, 94, 0.18), 0 1px 0 rgba(255, 255, 255, 0.24);
+.stApp ::-webkit-scrollbar-thumb {
+    background: rgba(109,233,255,0.16);
+    border-radius: 999px;
 }
 
-.brand-card h1 {
-    margin: 0;
-    font-size: 1.4rem;
-    letter-spacing: -0.03em;
+.stApp ::-webkit-scrollbar-thumb:hover {
+    background: rgba(109,233,255,0.28);
 }
 
-.brand-card p {
-    margin: 0;
-    color: var(--muted);
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 768px) {
+    .stApp [data-testid="stHorizontalBlock"] {
+        gap: 0.7rem;
+    }
+
+    .stApp .wb-forecast-panel {
+        padding: 1.1rem;
+        border-radius: 23px;
+    }
+
+    .stApp .wb-section-kicker {
+        margin-top: 1.35rem;
+    }
 }
 
-.hero-card {
+/* ---------- MOTION: ELEGANT, NOT BOUNCY ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+    .stApp [data-testid="stButton"] button:hover {
+        transform: translateY(-1px);
+    }
+}
+
+
+/* =========================================================
+   WATERBUDDY — ROUND 2
+   FULL APP PREMIUM UI SYSTEM
+   ========================================================= */
+
+/* ---------- UNIVERSAL PAGE HEADER ---------- */
+
+.stApp h1:first-of-type {
+    margin-bottom: 0.45rem !important;
+    text-shadow: 0 0 35px rgba(109,233,255,0.08);
+}
+
+.stApp h1:first-of-type + p {
+    max-width: 720px;
+    font-size: 0.98rem;
+    line-height: 1.65;
+}
+
+/* ---------- UNIVERSAL CARDS ---------- */
+
+.stApp .glass-card,
+.stApp .wb-card,
+.stApp .card,
+.stApp .feature-card,
+.stApp .achievement-card,
+.stApp .task-card,
+.stApp .goal-card,
+.stApp .analytics-card,
+.stApp .coach-card,
+.stApp .profile-card,
+.stApp .settings-card {
+    position: relative;
+    border: 1px solid rgba(160,220,255,0.11);
+    border-radius: 24px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(19,38,58,0.76),
+            rgba(7,17,29,0.68)
+        );
+    box-shadow:
+        0 22px 60px rgba(0,0,0,0.22),
+        inset 0 1px rgba(255,255,255,0.045);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* ---------- AI EXPERIENCES ---------- */
+
+.stApp .wb-ai-card {
+    position: relative;
+    padding: 1.35rem;
+    margin: 0.7rem 0;
+    border-radius: 25px;
+    border: 1px solid rgba(109,233,255,0.13);
+    background:
+        radial-gradient(
+            circle at 92% 12%,
+            rgba(109,233,255,0.09),
+            transparent 28%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(17,36,56,0.80),
+            rgba(6,16,27,0.72)
+        );
+    box-shadow:
+        0 24px 65px rgba(0,0,0,0.24),
+        inset 0 1px rgba(255,255,255,0.045);
+}
+
+.stApp .wb-ai-card:hover {
+    border-color: rgba(109,233,255,0.20);
+}
+
+/* ---------- AI HYDRATION COMMAND CENTER ---------- */
+
+.stApp .wb-ai-card h3 {
+    color: var(--wb-text);
+    letter-spacing: -0.025em;
+}
+
+.stApp .wb-ai-card p {
+    line-height: 1.6;
+}
+
+/* ---------- ACHIEVEMENTS ---------- */
+
+.stApp .achievement-card {
+    min-height: 145px;
+    padding: 1.25rem;
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.stApp .achievement-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(109,233,255,0.22);
+    box-shadow:
+        0 28px 70px rgba(0,0,0,0.27),
+        0 0 30px rgba(109,233,255,0.045);
+}
+
+/* ---------- DAILY TASKS ---------- */
+
+.stApp .task-card {
+    padding: 1.05rem 1.15rem;
+    margin-bottom: 0.65rem;
+}
+
+.stApp .task-card:hover {
+    border-color: rgba(109,233,255,0.18);
+}
+
+/* ---------- ANALYTICS ---------- */
+
+.stApp [data-testid="stMetric"] {
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.stApp .analytics-card {
+    padding: 1.25rem;
+}
+
+/* ---------- GOALS ---------- */
+
+.stApp .goal-card {
+    padding: 1.3rem;
+}
+
+.stApp .goal-card strong {
+    color: var(--wb-aqua);
+}
+
+/* ---------- PROFILE ---------- */
+
+.stApp .profile-card {
+    padding: 1.4rem;
+}
+
+.stApp .profile-card h2,
+.stApp .profile-card h3 {
+    color: var(--wb-text);
+}
+
+/* ---------- VOICE ASSISTANT ---------- */
+
+.stApp .voice-card {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 28px;
+    border: 1px solid rgba(109,233,255,0.14);
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(109,233,255,0.10),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(16,35,54,0.82),
+            rgba(5,14,24,0.72)
+        );
+    box-shadow: 0 28px 70px rgba(0,0,0,0.25);
+}
+
+/* ---------- WATER SCAN ---------- */
+
+.stApp .scan-card {
+    position: relative;
+    padding: 1.4rem;
+    border-radius: 28px;
+    border: 1px solid rgba(109,233,255,0.14);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,35,54,0.80),
+            rgba(5,14,24,0.70)
+        );
+    box-shadow:
+        0 28px 70px rgba(0,0,0,0.25),
+        inset 0 1px rgba(255,255,255,0.05);
+}
+
+/* ---------- REMINDERS ---------- */
+
+.stApp .reminder-card {
+    padding: 1.15rem;
+    border-radius: 22px;
+    border: 1px solid rgba(109,233,255,0.10);
+    background: rgba(12,27,43,0.68);
+}
+
+/* ---------- SETTINGS ---------- */
+
+.stApp [data-testid="stExpander"] {
+    border: 1px solid rgba(160,220,255,0.10) !important;
+    border-radius: 20px !important;
+    background: rgba(10,22,36,0.55) !important;
+    overflow: hidden;
+}
+
+.stApp [data-testid="stExpander"] summary {
+    font-weight: 700;
+}
+
+/* ---------- SELECTBOX / DROPDOWN ---------- */
+
+.stApp [data-baseweb="select"] {
+    border-radius: 14px;
+}
+
+.stApp [data-baseweb="popover"] {
+    border-radius: 16px !important;
+    border: 1px solid rgba(109,233,255,0.13) !important;
+    background: #091522 !important;
+}
+
+/* ---------- CHAT / COACH ---------- */
+
+.stApp [data-testid="stChatMessage"] {
+    border-radius: 20px !important;
+    border: 1px solid rgba(160,220,255,0.08);
+    background: rgba(10,23,37,0.60);
+    margin-bottom: 0.7rem;
+}
+
+.stApp [data-testid="stChatInput"] textarea {
+    border-radius: 18px !important;
+}
+
+/* ---------- DATAFRAME ---------- */
+
+.stApp [data-testid="stDataFrame"] {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(160,220,255,0.10);
+}
+
+/* ---------- LINKS ---------- */
+
+.stApp a {
+    color: var(--wb-aqua);
+}
+
+/* ---------- SUCCESS / WARNING / INFO ---------- */
+
+.stApp [data-testid="stAlert"] strong {
+    color: var(--wb-text);
+}
+
+/* ---------- PAGE SPACING ---------- */
+
+.stApp [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] {
+    gap: 0.45rem;
+}
+
+/* ---------- NAVIGATION ---------- */
+
+.stApp [data-testid="stSidebarNav"] {
+    padding-top: 1rem;
+}
+
+.stApp [data-testid="stSidebarNav"] a {
+    border-radius: 12px;
+    margin: 2px 0;
+    transition:
+        background 160ms ease,
+        color 160ms ease,
+        transform 160ms ease;
+}
+
+.stApp [data-testid="stSidebarNav"] a:hover {
+    background: rgba(109,233,255,0.065);
+    transform: translateX(2px);
+}
+
+.stApp [data-testid="stSidebarNav"] a[aria-current="page"] {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(109,233,255,0.12),
+            rgba(109,233,255,0.035)
+        );
+    box-shadow: inset 2px 0 var(--wb-aqua);
+}
+
+/* ---------- BUTTON VARIETY ---------- */
+
+.stApp button[kind="primary"] {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(109,233,255,0.20),
+            rgba(95,176,255,0.13)
+        ) !important;
+    border-color: rgba(109,233,255,0.28) !important;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 768px) {
+    .stApp .glass-card,
+    .stApp .wb-card,
+    .stApp .card,
+    .stApp .feature-card,
+    .stApp .achievement-card,
+    .stApp .task-card,
+    .stApp .goal-card,
+    .stApp .analytics-card,
+    .stApp .coach-card,
+    .stApp .profile-card,
+    .stApp .settings-card {
+        border-radius: 20px;
+    }
+
+    .stApp .wb-ai-card,
+    .stApp .voice-card,
+    .stApp .scan-card {
+        border-radius: 22px;
+    }
+}
+
+/* ---------- KEEP THE APP STABLE ---------- */
+
+.stApp [data-testid="stVerticalBlock"],
+.stApp [data-testid="stHorizontalBlock"],
+.stApp [data-testid="stColumn"],
+.stApp [data-testid="stMetric"],
+.stApp [data-testid="stAlert"],
+.stApp [data-testid="stProgress"] {
+    animation: none !important;
+}
+
+
+/* =========================================================
+   WATERBUDDY — ROUND 3
+   FINAL POLISH / PRODUCT FINISH
+   ========================================================= */
+
+/* ---------- GLOBAL PRODUCT FINISH ---------- */
+
+html {
+    scroll-behavior: smooth;
+}
+
+.stApp {
+    min-height: 100vh;
+}
+
+/* Give the content a little more breathing room */
+.main .block-container {
+    padding-left: clamp(1rem, 4vw, 3rem);
+    padding-right: clamp(1rem, 4vw, 3rem);
+}
+
+/* ---------- PREMIUM TEXT HIERARCHY ---------- */
+
+.stApp h1,
+.stApp h2,
+.stApp h3,
+.stApp h4 {
+    color: var(--wb-text);
+}
+
+.stApp h1,
+.stApp h2 {
+    text-wrap: balance;
+}
+
+.stApp p {
+    text-wrap: pretty;
+}
+
+/* ---------- STREAMLIT CHROME CLEANUP ---------- */
+
+.stApp [data-testid="stToolbar"] {
+    visibility: hidden;
+}
+
+.stApp [data-testid="stDecoration"] {
+    display: none;
+}
+
+.stApp [data-testid="stStatusWidget"] {
+    display: none;
+}
+
+/* ---------- SIDEBAR BRANDING ---------- */
+
+.stApp [data-testid="stSidebar"] {
+    box-shadow: 18px 0 55px rgba(0,0,0,0.16);
+}
+
+.stApp [data-testid="stSidebar"] > div:first-child {
+    padding-top: 1rem;
+}
+
+.stApp [data-testid="stSidebar"] hr {
+    margin: 0.9rem 0;
+}
+
+/* ---------- NAVIGATION POLISH ---------- */
+
+.stApp [data-testid="stSidebarNav"] ul {
+    gap: 0.18rem;
+}
+
+.stApp [data-testid="stSidebarNav"] a {
+    min-height: 42px;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid transparent;
+    color: var(--wb-text-soft);
+}
+
+.stApp [data-testid="stSidebarNav"] a:hover {
+    color: var(--wb-text);
+    border-color: rgba(109,233,255,0.08);
+}
+
+.stApp [data-testid="stSidebarNav"] a[aria-current="page"] {
+    color: var(--wb-text);
+    border-color: rgba(109,233,255,0.12);
+}
+
+/* ---------- GLASS DEPTH ---------- */
+
+.stApp [data-testid="stVerticalBlockBorderWrapper"],
+.stApp .glass-card,
+.stApp .wb-card,
+.stApp .card,
+.stApp .feature-card,
+.stApp .achievement-card,
+.stApp .task-card,
+.stApp .goal-card,
+.stApp .analytics-card,
+.stApp .coach-card,
+.stApp .profile-card,
+.stApp .settings-card {
+    box-shadow:
+        0 24px 65px rgba(0,0,0,0.22),
+        inset 0 1px rgba(255,255,255,0.045);
+}
+
+/* ---------- PREMIUM BUTTON STATES ---------- */
+
+.stApp button {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(21, 208, 235, 0.18), rgba(37, 99, 235, 0.14)), var(--surface);
 }
 
-.hero-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(circle at 20% 30%, rgba(45, 212, 232, 0.22), transparent 32%), radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.18), transparent 25%);
+.stApp button:focus-visible {
+    outline: 2px solid rgba(109,233,255,0.45) !important;
+    outline-offset: 3px;
 }
 
-.hero-card h1,
-.hero-card h2,
-.hero-card h3,
-.hero-card h4 {
-    position: relative;
-    z-index: 1;
+.stApp button:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
 }
 
-.hero-card .pill {
+/* ---------- FORM CONTROLS ---------- */
+
+.stApp [data-testid="stTextInput"],
+.stApp [data-testid="stNumberInput"],
+.stApp [data-testid="stSelectbox"],
+.stApp [data-testid="stSlider"],
+.stApp [data-testid="stDateInput"],
+.stApp [data-testid="stTimeInput"] {
+    margin-bottom: 0.55rem;
+}
+
+.stApp [data-baseweb="input"] {
+    border-radius: 14px !important;
+}
+
+/* ---------- CHECKBOX / RADIO ---------- */
+
+.stApp [data-testid="stCheckbox"] label,
+.stApp [data-testid="stRadio"] label {
+    color: var(--wb-text-soft);
+}
+
+.stApp [data-testid="stCheckbox"] label:hover,
+.stApp [data-testid="stRadio"] label:hover {
+    color: var(--wb-text);
+}
+
+/* ---------- DIVIDERS ---------- */
+
+.stApp hr {
+    opacity: 0.85;
+}
+
+/* ---------- TOOLTIPS ---------- */
+
+[data-testid="stTooltipContent"] {
+    border: 1px solid rgba(109,233,255,0.12) !important;
+    border-radius: 12px !important;
+    background: #091522 !important;
+}
+
+/* ---------- TABLE / DATA ---------- */
+
+.stApp [data-testid="stDataFrame"],
+.stApp [data-testid="stTable"] {
+    border-radius: 18px;
+}
+
+/* ---------- ERROR STATES ---------- */
+
+.stApp [data-testid="stException"] {
+    border-radius: 18px;
+}
+
+/* ---------- THEME SAFETY ----------
+   Aqua WaterBuddy identity remains visually stable while
+   the selected theme controls the surrounding atmosphere.
+   ---------- */
+
+.stApp {
+    --wb-mascot-primary: #6de9ff;
+    --wb-mascot-secondary: #5fb0ff;
+}
+
+/* ---------- MOBILE PRODUCT FINISH ---------- */
+
+@media (max-width: 768px) {
+    .main .block-container {
+        padding-top: 1.25rem;
+        padding-bottom: 2.5rem;
+    }
+
+    .stApp h1 {
+        letter-spacing: -0.045em;
+    }
+
+    .stApp h2 {
+        letter-spacing: -0.035em;
+    }
+
+    .stApp [data-testid="stSidebar"] {
+        box-shadow: none;
+    }
+
+    .stApp button {
+        min-height: 46px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main .block-container {
+        padding-left: 0.8rem;
+        padding-right: 0.8rem;
+    }
+
+    .stApp [data-testid="stMetric"] {
+        border-radius: 17px;
+    }
+
+    .stApp .wb-forecast-panel,
+    .stApp .wb-ai-card,
+    .stApp .scan-card,
+    .stApp .voice-card {
+        border-radius: 19px;
+    }
+}
+
+/* ---------- REDUCED MOTION ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ---------- FINAL STABILITY ---------- */
+
+.stApp [data-testid="stVerticalBlock"],
+.stApp [data-testid="stHorizontalBlock"],
+.stApp [data-testid="stColumn"],
+.stApp [data-testid="stVerticalBlockBorderWrapper"] {
+    min-height: 0;
+    height: auto;
+    overflow: visible;
+}
+
+
+/* --- Icon sizing fix --- */
+.stat-card__icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card__icon svg {
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+}
+
+.badge-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-icon svg {
+    width: 20px;
+    height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+}
+
+
+/* --- Forecast UI scale correction --- */
+.wb-forecast-grid {
+    gap: 0.65rem;
+}
+
+.wb-forecast-item {
+    padding: 0.85rem 0.95rem;
+}
+
+.wb-forecast-item strong {
+    font-size: 1.25rem;
+}
+
+.wb-forecast-item small {
+    font-size: 0.65rem;
+}
+
+.wb-forecast-item span {
+    font-size: 0.68rem;
+}
+
+/* --- Forecast status icon scale --- */
+.wb-forecast-status {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0.5rem 0.95rem;
-    border-radius: 999px;
-    background: rgba(var(--primary-rgb), 0.12);
-    color: var(--wb-text);
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 1rem;
-    backdrop-filter: blur(12px);
+    white-space: nowrap;
+    font-size: 0.72rem;
+    line-height: 1;
 }
 
-.brand-label {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    margin-bottom: 0.75rem;
+.wb-forecast-status::first-letter {
+    font-size: 0.75rem;
 }
 
-.brand-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 16px;
-    background: rgba(var(--primary-rgb), 0.18);
-    color: var(--wb-text);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
-}
 
-.brand-mark svg {
-    width: 22px;
-    height: 22px;
-}
-
-.hero-card h1 {
-    margin: 0;
-    font-size: clamp(2.4rem, 4.5vw, 3.4rem);
-    line-height: 1.02;
-    font-weight: 800;
-    letter-spacing: -0.05em;
-    background: linear-gradient(90deg, rgba(var(--primary-rgb), 1), rgba(var(--accent-rgb), 1));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0 18px 35px rgba(20, 58, 93, 0.08);
-}
-
-.hero-card p,
-.section-card p,
-.glass-card p,
-.badge-card .badge-detail {
-    color: var(--muted);
-    line-height: 1.75;
-}
-
-.hero-card p {
-    position: relative;
-    z-index: 1;
-    margin-top: 0.9rem;
-    font-size: 1rem;
-    max-width: 68ch;
-}
-
-.stat-card {
-    min-height: 136px;
-    display: grid;
-    gap: 0.7rem;
-}
-
-.stat-card .label {
-    font-size: 0.82rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-weight: 700;
-}
-
-.stat-card .value {
-    font-size: clamp(1.7rem, 2vw, 2.2rem);
-    font-weight: 800;
-    margin-top: 0.25rem;
-    color: var(--text);
-}
-
-.stat-card.accent-primary { border-left: 5px solid rgba(var(--primary-rgb), 0.95); }
-.stat-card.accent-accent { border-left: 5px solid rgba(var(--accent-rgb), 0.92); }
-
-.stat-card__icon {
-    width: 40px;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 14px;
-    background: rgba(var(--primary-rgb), 0.12);
-    color: var(--wb-text);
-}
-
-.stat-card.accent-accent .stat-card__icon {
-    background: rgba(var(--accent-rgb), 0.14);
-    color: var(--wb-text);
-}
+/* =========================================================
+   ACHIEVEMENTS — reference-matched vertical layout
+   ========================================================= */
 
 .badge-card {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem;
-    align-items: center;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0 0 40px 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
 
-.badge-card .badge-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 18px;
-    display: inline-flex;
+.badge-icon {
+    width: 24px;
+    height: 24px;
+    margin: 0 0 16px 0;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    background: rgba(var(--primary-rgb), 0.14);
-    color: var(--wb-text);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    justify-content: flex-start;
+    color: #e0e1dd;
+}
+
+.badge-icon svg {
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    display: block;
 }
 
 .badge-title {
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--text);
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: #ffffff;
 }
 
 .badge-detail {
-    margin-top: 0.2rem;
-    color: var(--muted);
-    font-size: 0.95rem;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 400;
+    color: #a0aab5;
 }
 
-.section-card {
-    padding: 1.3rem 1.4rem;
+/* Locked achievement styling */
+.badge-card:has(.badge-title:is([class])) {
+    /* structural hook retained for compatibility */
 }
 
-.section-card h3,
-.section-card h4,
-.section-card h5 {
-    margin: 0 0 0.75rem;
+/* Locked cards are identified by the title text generated by achievements.py */
+.badge-title {
+    transition: opacity 160ms ease, color 160ms ease;
+}
+
+/* Compact achievement rhythm on smaller screens */
+@media (max-width: 640px) {
+    .badge-card {
+        margin-bottom: 32px;
+    }
+
+    .badge-title {
+        font-size: 17px;
+    }
+
+    .badge-detail {
+        font-size: 14px;
+    }
+}
+
+
+/* =========================================================
+   ACHIEVEMENTS — MINIMAL HORIZONTAL ROWS
+   ========================================================= */
+
+.badge-card {
+    width: 100%;
+    min-height: 72px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    margin: 0 0 12px 0;
+    padding: 14px 20px;
+
+    background: rgba(13, 31, 45, 0.72);
+    border: 1px solid rgba(118, 140, 156, 0.14);
+    border-radius: 16px;
+
+    box-shadow: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.badge-card:hover {
+    background: rgba(16, 38, 54, 0.82);
+    border-color: rgba(56, 189, 248, 0.22);
+}
+
+.badge-icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #38bdf8;
+}
+
+.badge-icon svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+.badge-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.badge-title {
+    margin: 0 0 3px 0;
+
+    color: #ffffff;
+    font-size: 17px;
+    line-height: 1.25;
+    font-weight: 750;
+    letter-spacing: -0.01em;
+}
+
+.badge-detail {
+    margin: 0;
+
+    color: #768c9c;
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 400;
+}
+
+.badge-status {
+    flex: 0 0 auto;
+
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 650;
+
+    color: #38bdf8;
+    white-space: nowrap;
+}
+
+.badge-card.is-locked {
+    opacity: 0.58;
+}
+
+.badge-card.is-locked .badge-icon {
+    color: #707a8a;
+}
+
+.badge-card.is-locked .badge-title {
+    color: #a0aab5;
+}
+
+.badge-card.is-locked .badge-detail {
+    color: #707a8a;
+}
+
+.badge-card.is-locked .badge-status {
+    color: #707a8a;
+}
+
+@media (max-width: 640px) {
+    .badge-card {
+        min-height: 68px;
+        padding: 13px 16px;
+        gap: 12px;
+        border-radius: 14px;
+    }
+
+    .badge-title {
+        font-size: 16px;
+    }
+
+    .badge-detail {
+        font-size: 12px;
+    }
+
+    .badge-status {
+        font-size: 11px;
+    }
+}
+
+
+
+/* =========================================================
+   THEME-AWARE PREMIUM OVERRIDES
+   Keeps the WaterBuddy mascot aqua while allowing the
+   selected application theme to control the UI atmosphere.
+   ========================================================= */
+
+/* Core WaterBuddy variables follow the active theme */
+.stApp {
+    --wb-bg: var(--bg);
+    --wb-bg-soft: var(--bg-end);
+    --wb-text: var(--text);
+    --wb-text-soft: var(--muted);
+    --wb-aqua-soft: rgba(var(--primary-rgb), 0.14);
+    --wb-border: var(--border);
+    --wb-border-strong: var(--border-strong);
+    --wb-shadow: var(--shadow-soft);
+}
+
+/* Theme-controlled application atmosphere */
+.stApp {
+    background:
+        radial-gradient(
+            circle at 15% 8%,
+            rgba(var(--primary-rgb), 0.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 18%,
+            rgba(var(--accent-rgb), 0.08),
+            transparent 28%
+        ),
+        linear-gradient(
+            145deg,
+            var(--bg) 0%,
+            var(--bg-end) 48%,
+            var(--bg) 100%
+        );
     color: var(--text);
 }
 
+/* Theme-controlled cinematic texture */
+.stApp::before {
+    background:
+        repeating-linear-gradient(
+            125deg,
+            transparent 0,
+            transparent 110px,
+            rgba(var(--primary-rgb), 0.018) 111px,
+            transparent 113px
+        );
+}
+
+/* Glass surfaces */
+.stApp [data-testid="stVerticalBlockBorderWrapper"] {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(var(--primary-rgb), 0.045),
+            rgba(var(--accent-rgb), 0.018)
+        );
+    border-color: var(--border);
+}
+
+/* Metrics */
+.stApp [data-testid="stMetric"] {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(var(--primary-rgb), 0.04),
+            rgba(var(--accent-rgb), 0.015)
+        );
+    border-color: var(--border);
+}
+
+/* Buttons */
+.stApp button {
+    border-color: rgba(var(--primary-rgb), 0.22) !important;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(var(--primary-rgb), 0.14),
+            rgba(var(--accent-rgb), 0.07)
+        ) !important;
+    color: var(--text) !important;
+}
+
+.stApp button:hover {
+    border-color: var(--border-strong) !important;
+    box-shadow:
+        0 0 0 1px rgba(var(--primary-rgb), 0.06),
+        0 14px 38px rgba(0, 0, 0, 0.26),
+        0 0 30px rgba(var(--primary-rgb), 0.08);
+}
+
+/* Inputs / selects */
+.stApp input,
+.stApp textarea,
+.stApp select {
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+}
+
+.stApp input:focus,
+.stApp textarea:focus,
+.stApp select:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.12) !important;
+}
+
+/* Common premium panels */
+.stApp .wb-forecast-panel,
+.stApp .wb-ai-card,
+.stApp .scan-card,
+.stApp .voice-card {
+    border-color: rgba(var(--primary-rgb), 0.18);
+}
+
+/* Theme-aware accent text */
+.stApp .wb-forecast-status,
+.stApp .wb-ai-card strong,
+.stApp .scan-card strong,
+.stApp .voice-card strong {
+    color: var(--primary);
+}
+
+/* Theme-aware progress / accent surfaces */
+.stApp [role="progressbar"] {
+    accent-color: var(--primary);
+}
+
+/* Keep the mascot identity aqua across all themes */
+.stApp {
+    --wb-mascot-primary: #6de9ff;
+    --wb-mascot-secondary: #5fb0ff;
+}
+
+/* =========================================================
+   FINAL THEME POLISH — SIDEBAR + LIGHT MODE CONTRAST
+   ========================================================= */
+
+/* ---------- SIDEBAR ---------- */
+
+.stApp [data-testid="stSidebar"] {
+    background:
+        linear-gradient(
+            180deg,
+            var(--bg) 0%,
+            var(--bg-end) 100%
+        ) !important;
+
+    border-right: 1px solid var(--border) !important;
+    color: var(--text) !important;
+}
+
+.stApp [data-testid="stSidebar"] * {
+    color: var(--text);
+}
+
+.stApp [data-testid="stSidebar"] p,
+.stApp [data-testid="stSidebar"] label,
+.stApp [data-testid="stSidebar"] span {
+    color: var(--muted);
+}
+
+.stApp [data-testid="stSidebar"] button {
+    color: var(--text) !important;
+    border-color: rgba(var(--primary-rgb), 0.20) !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(var(--primary-rgb), 0.10),
+            rgba(var(--accent-rgb), 0.05)
+        ) !important;
+}
+
+.stApp [data-testid="stSidebar"] button:hover {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(var(--primary-rgb), 0.18),
+            rgba(var(--accent-rgb), 0.10)
+        ) !important;
+
+    border-color: var(--border-strong) !important;
+}
+
+
+/* ---------- MAIN THEME SURFACES ---------- */
+
+.stApp [data-testid="stVerticalBlockBorderWrapper"],
+.stApp [data-testid="stMetric"] {
+    color: var(--text) !important;
+}
+
+
+/* ---------- INPUTS ---------- */
+
+.stApp input,
+.stApp textarea,
+.stApp [data-baseweb="select"] > div,
+.stApp [data-baseweb="input"] > div {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+}
+
+.stApp input::placeholder,
+.stApp textarea::placeholder {
+    color: var(--muted) !important;
+}
+
+
+/* ---------- LIGHT MODE READABILITY ----------
+   These rules intentionally use the active theme variables,
+   so each light theme keeps its own identity.
+   ---------- */
+
+.stApp [data-testid="stMetricLabel"] {
+    color: var(--muted) !important;
+}
+
+.stApp [data-testid="stMetricValue"] {
+    color: var(--text) !important;
+}
+
+.stApp h1,
+.stApp h2,
+.stApp h3,
+.stApp h4 {
+    color: var(--text) !important;
+}
+
+.stApp p {
+    color: var(--muted);
+}
+
+
+/* ---------- ALERTS / INFO ---------- */
+
+.stApp [data-testid="stAlert"] {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(var(--primary-rgb), 0.08),
+            rgba(var(--accent-rgb), 0.04)
+        ) !important;
+
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+}
+
+
+/* ---------- CHECKBOXES / RADIO ---------- */
+
+.stApp [data-testid="stCheckbox"] label,
+.stApp [data-testid="stRadio"] label {
+    color: var(--text) !important;
+}
+
+
+/* ---------- SELECT DROPDOWNS ---------- */
+
+[data-baseweb="popover"] {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+}
+
+[data-baseweb="popover"] * {
+    color: var(--text) !important;
+}
+
+[data-baseweb="menu"] {
+    background: var(--surface) !important;
+}
+
+[data-baseweb="menu"] * {
+    color: var(--text) !important;
+}
+
+
+/* ---------- THEME-COLORED DIVIDERS ---------- */
+
+.stApp hr {
+    border-color: var(--border) !important;
+}
+
+
+/* ---------- THEME-AWARE LINKS ---------- */
+
+.stApp a {
+    color: var(--primary) !important;
+}
+
+
+/* ---------- KEEP MASCOT AQUA ---------- */
+
+.stApp {
+    --wb-mascot-primary: #6de9ff;
+    --wb-mascot-secondary: #5fb0ff;
+}
+
+/* =========================================================
+   WATERBUDDY — FINAL LIGHT/DARK THEME SURFACE SYSTEM
+   ========================================================= */
+
+/* ---------- GLOBAL THEME SURFACES ---------- */
+
+.stApp {
+    --wb-panel:
+        linear-gradient(
+            145deg,
+            rgba(var(--primary-rgb), 0.055),
+            rgba(var(--accent-rgb), 0.025)
+        );
+
+    --wb-panel-strong:
+        linear-gradient(
+            145deg,
+            rgba(var(--primary-rgb), 0.10),
+            rgba(var(--accent-rgb), 0.045)
+        );
+
+    --wb-input-bg: var(--surface);
+    --wb-chat-bg: var(--surface);
+    --wb-heading: var(--text);
+}
+
+
+/* ---------- MAIN GLASS ---------- */
+
+.stApp [data-testid="stVerticalBlockBorderWrapper"] {
+    background: var(--wb-panel) !important;
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+}
+
+
+/* ---------- DASHBOARD CARDS ---------- */
+
+.stApp .wb-forecast-panel,
+.stApp .wb-ai-card,
+.stApp .scan-card,
+.stApp .voice-card,
+.stApp .stat-card,
+.stApp .glass-card,
+.stApp .info-card {
+    background: var(--wb-panel) !important;
+    border-color: var(--border) !important;
+    color: var(--text) !important;
+}
+
+
+/* ---------- DASHBOARD "YOUR HYDRATION MATTERS" / TRAJECTORY ---------- */
+
+.stApp [class*="hydration"],
+.stApp [class*="trajectory"],
+.stApp [class*="matters"] {
+    color: var(--text);
+}
+
+.stApp [class*="hydration"] p,
+.stApp [class*="trajectory"] p,
+.stApp [class*="matters"] p {
+    color: var(--muted) !important;
+}
+
+
+/* ---------- HEADINGS ---------- */
+
+.stApp h1,
+.stApp h2,
+.stApp h3,
+.stApp h4,
+.stApp h5,
+.stApp h6 {
+    color: var(--text) !important;
+}
+
+
+/* ---------- CHATBOT ---------- */
+
+/* Chat with WaterBuddy heading */
+.stApp .chat-title,
+.stApp .chat-header,
+.stApp .chat-heading,
+.stApp [class*="chat-title"],
+.stApp [class*="chat-header"],
+.stApp [class*="chat-heading"] {
+    color: var(--text) !important;
+}
+
+/* Streamlit chat message text */
+.stApp [data-testid="stChatMessage"] {
+    color: var(--text) !important;
+}
+
+.stApp [data-testid="stChatMessage"] p,
+.stApp [data-testid="stChatMessage"] span {
+    color: var(--text) !important;
+}
+
+
+/* ---------- AI COACH CHAT INPUT ---------- */
+
+.stApp [data-testid="stChatInput"] {
+    background: var(--wb-input-bg) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.10),
+        0 0 0 1px rgba(var(--primary-rgb), 0.025) !important;
+}
+
+.stApp [data-testid="stChatInput"] textarea {
+    background: transparent !important;
+    color: var(--text) !important;
+    caret-color: var(--primary) !important;
+}
+
+.stApp [data-testid="stChatInput"] textarea::placeholder {
+    color: var(--muted) !important;
+}
+
+.stApp [data-testid="stChatInput"] button {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(var(--primary-rgb), 0.14),
+            rgba(var(--accent-rgb), 0.07)
+        ) !important;
+
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+}
+
+.stApp [data-testid="stChatInput"]:focus-within {
+    border-color: var(--primary) !important;
+    box-shadow:
+        0 0 0 1px rgba(var(--primary-rgb), 0.12),
+        0 10px 35px rgba(0, 0, 0, 0.10) !important;
+}
+
+
+/* ---------- ALL TEXT INSIDE PREMIUM PANELS ---------- */
+
+.stApp .wb-forecast-panel *,
+.stApp .wb-ai-card *,
+.stApp .scan-card *,
+.stApp .voice-card *,
+.stApp .stat-card *,
+.stApp .glass-card *,
+.stApp .info-card * {
+    color: inherit;
+}
+
+.stApp .wb-forecast-panel p,
+.stApp .wb-ai-card p,
+.stApp .scan-card p,
+.stApp .voice-card p,
+.stApp .stat-card p,
+.stApp .glass-card p,
+.stApp .info-card p {
+    color: var(--muted);
+}
+
+
+/* ---------- SELECT / INPUT CONTROLS ---------- */
+
+.stApp [data-baseweb="select"] > div,
+.stApp [data-baseweb="input"] > div,
+.stApp textarea,
+.stApp input {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+}
+
+.stApp [data-baseweb="select"] *,
+.stApp [data-baseweb="input"] * {
+    color: var(--text) !important;
+}
+
+
+/* ---------- LIGHT MODE: REMOVE DARK GLASS FEEL ---------- */
+
+.stApp[data-theme="light"] [data-testid="stVerticalBlockBorderWrapper"],
+.stApp[data-theme="light"] [data-testid="stMetric"],
+.stApp[data-theme="light"] .wb-forecast-panel,
+.stApp[data-theme="light"] .wb-ai-card,
+.stApp[data-theme="light"] .scan-card,
+.stApp[data-theme="light"] .voice-card {
+    box-shadow:
+        0 12px 35px rgba(30, 60, 80, 0.08) !important;
+}
+
+
+/* ---------- THEME-AWARE SIDEBAR ---------- */
+
+.stApp [data-testid="stSidebar"] {
+    background:
+        linear-gradient(
+            180deg,
+            var(--bg) 0%,
+            var(--bg-end) 100%
+        ) !important;
+
+    color: var(--text) !important;
+}
+
+.stApp [data-testid="stSidebar"] p,
+.stApp [data-testid="stSidebar"] span,
+.stApp [data-testid="stSidebar"] label {
+    color: var(--text) !important;
+}
+
+
+/* ---------- THEME-AWARE NAVIGATION ---------- */
+
+.stApp [data-testid="stSidebar"] [data-testid="stPageLink"] {
+    color: var(--text) !important;
+}
+
+.stApp [data-testid="stSidebar"] [data-testid="stPageLink"]:hover {
+    background:
+        rgba(var(--primary-rgb), 0.09) !important;
+}
+
+
+/* ---------- NEVER CHANGE THE MASCOT ---------- */
+
+.stApp {
+    --wb-mascot-primary: #6de9ff;
+    --wb-mascot-secondary: #5fb0ff;
+}
+
+
+/* YIN & YANG LIGHT — DARK PANEL CONTRAST */
+.stApp.yin-yang-light .wb-forecast-panel,
+.stApp.yin-yang-light .wb-ai-card,
+.stApp.yin-yang-light .scan-card,
+.stApp.yin-yang-light .voice-card,
+.stApp.yin-yang-light .stat-card,
+.stApp.yin-yang-light .glass-card,
+.stApp.yin-yang-light .info-card {
+    color: #f5f5f5 !important;
+}
+
+.stApp.yin-yang-light .wb-forecast-panel *,
+.stApp.yin-yang-light .wb-ai-card *,
+.stApp.yin-yang-light .scan-card *,
+.stApp.yin-yang-light .voice-card *,
+.stApp.yin-yang-light .stat-card *,
+.stApp.yin-yang-light .glass-card *,
+.stApp.yin-yang-light .info-card * {
+    color: #f5f5f5 !important;
+}
+
+.stApp.yin-yang-light .wb-forecast-panel span,
+.stApp.yin-yang-light .wb-forecast-panel p,
+.stApp.yin-yang-light .wb-ai-card span,
+.stApp.yin-yang-light .wb-ai-card p,
+.stApp.yin-yang-light .scan-card span,
+.stApp.yin-yang-light .scan-card p,
+.stApp.yin-yang-light .voice-card span,
+.stApp.yin-yang-light .voice-card p {
+    color: #d4d4d4 !important;
+}
+
+.stApp.yin-yang-light .wb-forecast-panel strong,
+.stApp.yin-yang-light .wb-ai-card strong,
+.stApp.yin-yang-light .scan-card strong,
+.stApp.yin-yang-light .voice-card strong,
+.stApp.yin-yang-light .stat-card strong {
+    color: #ffffff !important;
+}
+
+/* FINAL YIN & YANG LIGHT CONTRAST */
+.stApp {
+    --wb-panel-text: var(--text);
+    --wb-panel-muted: var(--muted);
+}
+
+.stApp .wb-forecast-panel,
+.stApp .wb-ai-card,
+.stApp .scan-card,
+.stApp .voice-card,
+.stApp .stat-card,
+.stApp .glass-card,
+.stApp .info-card {
+    color: var(--wb-panel-text) !important;
+}
+
+.stApp .wb-forecast-panel strong,
+.stApp .wb-ai-card strong,
+.stApp .scan-card strong,
+.stApp .voice-card strong,
+.stApp .stat-card strong,
+.stApp .glass-card strong,
+.stApp .info-card strong {
+    color: var(--wb-panel-text) !important;
+}
+
+.stApp .wb-forecast-panel span,
+.stApp .wb-forecast-panel p,
+.stApp .wb-ai-card span,
+.stApp .wb-ai-card p,
+.stApp .scan-card span,
+.stApp .scan-card p,
+.stApp .voice-card span,
+.stApp .voice-card p,
+.stApp .stat-card span,
+.stApp .stat-card p,
+.stApp .glass-card span,
+.stApp .glass-card p,
+.stApp .info-card span,
+.stApp .info-card p {
+    color: var(--wb-panel-muted) !important;
+}
+
+/* Yin & Yang light: dark surfaces get light content */
+@media (prefers-color-scheme: light) {
+    .stApp .wb-forecast-panel,
+    .stApp .wb-ai-card,
+    .stApp .scan-card,
+    .stApp .voice-card,
+    .stApp .stat-card,
+    .stApp .glass-card,
+    .stApp .info-card {
+        color: #f5f5f5 !important;
+    }
+}
+
+/* WaterBuddy bottle progress visual */
 .bottle-shell {
-    width: 100%;
-    max-width: 220px;
-    height: 280px;
-    margin: 0 auto;
-    border-radius: 30px 30px 42px 42px;
-    border: 1.5px solid rgba(var(--primary-rgb), 0.35);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(232, 249, 255, 0.48));
     position: relative;
+    width: 150px;
+    height: 300px;
+    margin: 24px auto;
+    border: 2px solid rgba(92, 225, 230, 0.35);
+    border-radius: 34px 34px 28px 28px;
     overflow: hidden;
-    box-shadow: var(--shadow-deep);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.25),
+        0 0 35px rgba(92, 225, 230, 0.08);
+    transform-origin: center bottom;
+    transition: transform 0.35s ease;
 }
 
 .bottle-shell::before {
-    content: '';
+    content: "";
     position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.55), transparent 22%);
-    pointer-events: none;
-}
-
-.bottle-shell::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28), inset 0 16px 60px rgba(1, 36, 67, 0.12);
-    pointer-events: none;
+    top: -18px;
+    left: 38px;
+    width: 70px;
+    height: 30px;
+    border: 2px solid rgba(92, 225, 230, 0.35);
+    border-bottom: 0;
+    border-radius: 12px 12px 0 0;
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .bottle-fill {
     position: absolute;
-    bottom: 0;
     left: 0;
     right: 0;
-    height: 6%;
-    background: radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.92), rgba(110, 233, 255, 0.98) 18%, rgba(31, 140, 255, 0.96) 100%);
-    box-shadow: inset 0 20px 48px rgba(255, 255, 255, 0.24), inset 0 -18px 36px rgba(21, 99, 204, 0.20);
-    transition: height 760ms cubic-bezier(0.22, 0.8, 0.28, 1);
-    /* add subtle wave mask via pseudo-element if supported */
+    bottom: 0;
+    min-height: 6px;
     overflow: hidden;
+    background: linear-gradient(
+        180deg,
+        rgba(92, 225, 230, 0.88),
+        rgba(56, 189, 248, 0.72)
+    );
+    box-shadow: 0 -8px 25px rgba(92, 225, 230, 0.16);
+    transition: height 0.8s cubic-bezier(.22, 1, .36, 1);
 }
-.bottle-fill::after {
-    content: '';
-    position: absolute;
-    left: -10%;
-    right: -10%;
-    top: -6px;
-    height: 24px;
-    background: radial-gradient(circle at 60% 20%, rgba(255,255,255,0.85), rgba(255,255,255,0.0) 40%);
-    opacity: 0.9;
-    transform: translateY(-8px);
-    pointer-events: none;
-}
-/* simple animated surface ripple when animations are allowed */
-@keyframes wave { 0%{ transform: translateX(0);} 50%{ transform: translateX(6%);} 100%{ transform: translateX(0);} }
+
 .bottle-fill .wave {
     position: absolute;
-    left: 0; right: 0; top: 0; height: 10px; opacity: 0.85;
-    background: linear-gradient(90deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.18) 100%);
-    transform-origin: center;
-    animation: wave 2200ms ease-in-out infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-    .bottle-fill .wave { animation: none; }
-    .bottle-fill { transition: none; }
-}
-
-.bottle-shell.celebrate {
-    animation: bottle-bloom 900ms ease-out;
-}
-
-.bottle-shell.celebrate::before {
-    animation: confetti-burst 950ms ease-out;
+    top: -10px;
+    left: -25%;
+    width: 150%;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.20);
+    animation: wb-water-wave 2.8s ease-in-out infinite;
 }
 
 .bottle-label {
     position: absolute;
-    left: 50%;
-    bottom: 0.9rem;
-    transform: translateX(-50%);
-    padding: 0.3rem 0.9rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.84);
-    color: var(--wb-text);
+    inset: 50% 0 auto;
+    transform: translateY(-50%);
+    z-index: 2;
+    text-align: center;
+    color: var(--text);
     font-weight: 700;
     font-size: 0.95rem;
-    letter-spacing: 0.01em;
-    backdrop-filter: blur(12px);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
 }
 
-.progress-caption {
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text);
-    margin-top: 1rem;
+@keyframes wb-water-wave {
+    0%, 100% { transform: translateX(-8%) rotate(-2deg); }
+    50% { transform: translateX(8%) rotate(2deg); }
 }
 
-.progress-caption span {
-    display: inline-block;
-    background: linear-gradient(90deg, rgba(var(--primary-rgb), 1), rgba(var(--accent-rgb), 1));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+.bottle-shell.celebrate {
+    animation: wb-bottle-celebrate 0.7s ease;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', 'Inter', sans-serif;
-    color: var(--text);
-    margin-top: 0;
-}
-
-h2 {
-    font-size: clamp(2rem, 3.5vw, 2.6rem);
-    line-height: 1.1;
-    font-weight: 700;
-}
-
-h3 {
-    font-size: clamp(1.4rem, 2vw, 1.75rem);
-    line-height: 1.35;
-    font-weight: 700;
-}
-
-h4, h5 {
-    font-size: 1.05rem;
-    font-weight: 700;
-}
-
-p, label, .stMarkdown, .stText {
-    color: var(--text);
-}
-
-.stInfo, .stSuccess, .stWarning, .stError, .stAlert {
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-soft);
-    background: var(--surface);
-}
-
-.stInfo {
-    color: var(--text);
-}
-
-.stSuccess {
-    color: var(--text);
-}
-
-.stWarning {
-    color: var(--text);
-}
-
-.stError {
-    color: var(--text);
-}
-
-button[disabled], .stButton button[disabled] {
-    opacity: 0.7;
-}
-
-@keyframes fade-slide-up {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bottle-bloom {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
-}
-
-@keyframes confetti-burst {
-    0% { opacity: 0; transform: translateY(0); }
-    30% { opacity: 1; transform: translateY(-6px); }
-    100% { opacity: 0; transform: translateY(-18px); }
+@keyframes wb-bottle-celebrate {
+    0%, 100% { transform: scale(1); }
+    35% { transform: scale(1.035) rotate(-1deg); }
+    70% { transform: scale(1.025) rotate(1deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    .bottle-shell,
+    .bottle-fill,
+    .bottle-fill .wave {
         animation: none !important;
         transition: none !important;
     }
-    .bottle-fill {
-        transition: none;
-    }
 }
-
-
-/* ===== WaterBuddy theme-safe text ===== */
-html, body, [data-testid="stAppViewContainer"],
-[data-testid="stAppViewContainer"] * {
-    --wb-safe-text: var(--wb-text);
-    --wb-safe-muted: var(--wb-muted);
-}
-
-[data-testid="stAppViewContainer"] h1,
-[data-testid="stAppViewContainer"] h2,
-[data-testid="stAppViewContainer"] h3,
-[data-testid="stAppViewContainer"] h4,
-[data-testid="stAppViewContainer"] h5,
-[data-testid="stAppViewContainer"] h6,
-[data-testid="stAppViewContainer"] p,
-[data-testid="stAppViewContainer"] label,
-[data-testid="stAppViewContainer"] span,
-[data-testid="stAppViewContainer"] li,
-[data-testid="stAppViewContainer"] [data-testid="stMarkdownContainer"] {
-    color: var(--wb-safe-text);
-}
-
-[data-testid="stAppViewContainer"] input,
-[data-testid="stAppViewContainer"] textarea,
-[data-testid="stAppViewContainer"] select {
-    color: var(--wb-safe-text) !important;
-    caret-color: var(--wb-safe-text) !important;
-}
-
-[data-testid="stAppViewContainer"] input::placeholder,
-[data-testid="stAppViewContainer"] textarea::placeholder {
-    color: var(--wb-safe-muted) !important;
-    opacity: 1 !important;
-}
-
-/* Streamlit buttons */
-[data-testid="stAppViewContainer"] button {
-    color: var(--wb-safe-text);
-}
-
-/* Keep primary/action buttons readable */
-[data-testid="stAppViewContainer"] button[kind="primary"],
-[data-testid="stAppViewContainer"] button[kind="secondaryFormSubmit"],
-[data-testid="stFormSubmitButton"] button {
-    color: #ffffff !important;
-}
-
-/* Selectbox/dropdown text */
-[data-testid="stAppViewContainer"] [data-baseweb="select"] * {
-    color: var(--wb-safe-text) !important;
-}
-
-/* Sidebar */
-[data-testid="stSidebar"] * {
-    color: var(--wb-safe-text);
-}
-
-
-/* =========================================================
-   LIGHT MODE WIDGET CONTRAST FIX
-   Keep Streamlit controls readable in light themes.
-   ========================================================= */
-
-/* Form/action buttons: dark button backgrounds need white text */
-[data-testid="stFormSubmitButton"] button,
-[data-testid="stFormSubmitButton"] button *,
-[data-testid="stButton"] button[kind="primary"],
-[data-testid="stButton"] button[kind="primary"] * {
-    color: #ffffff !important;
-}
-
-/* Select/dropdown: readable text against its dark Streamlit surface */
-[data-testid="stAppViewContainer"] [data-baseweb="select"] > div {
-    color: #ffffff !important;
-}
-
-[data-testid="stAppViewContainer"] [data-baseweb="select"] > div *,
-[data-testid="stAppViewContainer"] [data-baseweb="select"] input {
-    color: #ffffff !important;
-}
-
-/* Dropdown menu options */
-[data-testid="stAppViewContainer"] [role="listbox"],
-[data-testid="stAppViewContainer"] [role="option"] {
-    color: #ffffff !important;
-}
-
-[data-testid="stAppViewContainer"] [role="option"] * {
-    color: #ffffff !important;
-}
-
-
-/* =========================================================
-   STREAMLIT CONTROL VISIBILITY — LIGHT THEMES
-   ========================================================= */
-
-/* Theme/select controls: force readable text */
-[data-testid="stSelectbox"] [data-baseweb="select"] > div {
-    color: #ffffff !important;
-}
-
-[data-testid="stSelectbox"] [data-baseweb="select"] > div span {
-    color: #ffffff !important;
-}
-
-[data-testid="stSelectbox"] [data-baseweb="select"] input {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-/* Dropdown arrow */
-[data-testid="stSelectbox"] [data-baseweb="select"] svg {
-    fill: #9ec4e3 !important;
-}
-
-/* Add Water + / − controls */
-[data-testid="stButton"] button {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-[data-testid="stButton"] button p,
-[data-testid="stButton"] button span,
-[data-testid="stButton"] button div {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-/* Form submit buttons */
-[data-testid="stFormSubmitButton"] button,
-[data-testid="stFormSubmitButton"] button p,
-[data-testid="stFormSubmitButton"] button span {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-/* ===== FINAL LIGHT-THEME WIDGET VISIBILITY FIX ===== */
-
-/* Theme selector / all Selectbox widgets */
-[data-testid="stSelectbox"] [data-baseweb="select"],
-[data-testid="stSelectbox"] [data-baseweb="select"] > div {
-    color: var(--wb-text) !important;
-}
-
-[data-testid="stSelectbox"] [data-baseweb="select"] *,
-[data-testid="stSelectbox"] [data-baseweb="select"] span,
-[data-testid="stSelectbox"] [data-baseweb="select"] input {
-    color: var(--wb-text) !important;
-    -webkit-text-fill-color: var(--wb-text) !important;
-}
-
-/* Keep the selected value readable even when Streamlit gives the box a dark surface */
-[data-testid="stSelectbox"] [data-baseweb="select"] > div > div {
-    color: var(--wb-text) !important;
-}
-
-/* Number input +/- controls */
-[data-testid="stNumberInput"] button,
-[data-testid="stNumberInput"] button *,
-[data-testid="stNumberInput"] button svg {
-    color: var(--wb-text) !important;
-    fill: var(--wb-text) !important;
-    stroke: var(--wb-text) !important;
-    -webkit-text-fill-color: var(--wb-text) !important;
-}
-
-/* Number input value */
-[data-testid="stNumberInput"] input {
-    color: var(--wb-text) !important;
-    -webkit-text-fill-color: var(--wb-text) !important;
-}
-
-/* Save / form buttons ALWAYS readable */
-[data-testid="stFormSubmitButton"] button,
-[data-testid="stFormSubmitButton"] button *,
-[data-testid="stButton"] button[kind="primary"],
-[data-testid="stButton"] button[kind="primary"] * {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-
-/* Normal secondary buttons remain theme-readable */
-[data-testid="stButton"] button[kind="secondary"],
-[data-testid="stButton"] button[kind="secondary"] * {
-    color: var(--wb-text) !important;
-    -webkit-text-fill-color: var(--wb-text) !important;
-}
-
-
-/* =========================================================
-   FINAL STREAMLIT WIDGET FIX — LIGHT + DARK THEMES
-   ========================================================= */
-
-/* SELECTBOX CLOSED STATE */
-[data-testid="stSelectbox"] [data-baseweb="select"] > div {
-    background: var(--wb-bg) !important;
-    background-color: var(--wb-bg) !important;
-    color: var(--wb-text) !important;
-    border-color: rgba(100, 130, 160, 0.35) !important;
-}
-
-[data-testid="stSelectbox"] [data-baseweb="select"] > div *,
-[data-testid="stSelectbox"] [data-baseweb="select"] span,
-[data-testid="stSelectbox"] [data-baseweb="select"] input {
-    color: var(--wb-text) !important;
-    -webkit-text-fill-color: var(--wb-text) !important;
-}
-
-/* SELECTBOX ARROW */
-[data-testid="stSelectbox"] [data-baseweb="select"] svg {
-    fill: var(--wb-text) !important;
-    color: var(--wb-text) !important;
-}
-
-/* SELECTBOX DROPDOWN OPTIONS */
-[data-baseweb="popover"] [role="option"] {
-    background: var(--wb-bg) !important;
-    color: var(--wb-text) !important;
-}
-
-[data-baseweb="popover"] [role="option"] * {
-    color: var(--wb-text) !important;
-}
-
-/* NUMBER INPUT */
-[data-testid="stNumberInput"] input {
-    background: var(--wb-bg) !important;
-    color: var(--wb-text) !important;
-    -webkit-text-fill-color: var(--wb-text) !important;
-}
-
-/* NUMBER INPUT + / - BUTTONS */
-[data-testid="stNumberInput"] button {
-    background: var(--wb-bg) !important;
-    color: var(--wb-text) !important;
-    border-color: rgba(100, 130, 160, 0.35) !important;
-}
-
-[data-testid="stNumberInput"] button *,
-[data-testid="stNumberInput"] button svg {
-    color: var(--wb-text) !important;
-    fill: var(--wb-text) !important;
-    stroke: var(--wb-text) !important;
-    -webkit-text-fill-color: var(--wb-text) !important;
-}
-
-/* HOVER */
-[data-testid="stNumberInput"] button:hover {
-    background: var(--wb-card) !important;
-}
-
-/* FORM SUBMIT BUTTON */
-[data-testid="stFormSubmitButton"] button,
-[data-testid="stFormSubmitButton"] button * {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-}
-

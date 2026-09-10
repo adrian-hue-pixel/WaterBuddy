@@ -12,21 +12,150 @@ from services.voice import VoiceService
 from services.mascot_service import get_mascot_service
 
 
+st.html("""
+<style>
+/* =========================================================
+   WaterBuddy Voice Assistant — premium UI
+   Functionality intentionally untouched.
+   ========================================================= */
+
+.voice-section {
+    margin: 26px 0 12px;
+}
+
+.voice-section-label {
+    color: #38bdf8;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.voice-section-title {
+    color: #f5fbff;
+    font-family: "Manrope", "DM Sans", sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -.025em;
+    margin: 0;
+}
+
+/* Main informational panels */
+[data-testid="stAlert"] {
+    border-radius: 18px !important;
+    border: 1px solid rgba(56,189,248,.12) !important;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(10,28,43,.86),
+            rgba(5,14,23,.92)
+        ) !important;
+    box-shadow:
+        0 14px 38px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+/* Microphone recorder */
+[data-testid="stAudioInput"] {
+    margin: 12px 0 20px;
+}
+
+[data-testid="stAudioInput"] > div {
+    border-radius: 22px !important;
+    border: 1px solid rgba(56,189,248,.16) !important;
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(56,189,248,.055),
+            transparent 55%
+        ),
+        rgba(7,19,30,.84) !important;
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.22),
+        inset 0 1px 0 rgba(255,255,255,.025) !important;
+    padding: 8px !important;
+}
+
+/* Buttons */
+.stButton > button {
+    min-height: 44px !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(56,189,248,.18) !important;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(17,48,66,.92),
+            rgba(7,24,37,.96)
+        ) !important;
+    color: #eafaff !important;
+    font-weight: 700 !important;
+    box-shadow:
+        0 10px 26px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.025) !important;
+    transition: all .18s ease !important;
+}
+
+.stButton > button:hover {
+    border-color: rgba(56,189,248,.40) !important;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(21,61,82,.96),
+            rgba(8,29,44,.98)
+        ) !important;
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.24),
+        0 0 24px rgba(56,189,248,.08) !important;
+    transform: translateY(-1px);
+}
+
+/* Text fallback */
+[data-testid="stTextInput"] > div {
+    border-radius: 16px !important;
+    background: rgba(7,19,30,.82) !important;
+    border-color: rgba(56,189,248,.14) !important;
+}
+
+/* Audio player */
+[data-testid="stAudio"] {
+    margin: 12px 0 18px;
+    padding: 10px;
+    border-radius: 18px;
+    background: rgba(7,19,30,.72);
+    border: 1px solid rgba(56,189,248,.10);
+}
+
+/* Divider */
+hr {
+    border-color: rgba(255,255,255,.055) !important;
+}
+
+/* Section spacing */
+.stMarkdown {
+    margin-bottom: 4px;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .voice-section-title {
+        font-size: 19px;
+    }
+
+    [data-testid="stAudioInput"] > div {
+        border-radius: 18px !important;
+    }
+
+    .stButton > button {
+        min-height: 42px !important;
+    }
+}
+</style>
+""")
 
 
-def _voice_daily_limit():
-    today = str(date.today())
-    if st.session_state.get("ai_usage_date") != today:
-        st.session_state["ai_usage_date"] = today
-        st.session_state["ai_usage_count"] = 0
-    return int(st.session_state.get("ai_usage_count", 0))
 
 
-def _use_voice_request():
-    _voice_daily_limit()
-    st.session_state["ai_usage_count"] = int(
-        st.session_state.get("ai_usage_count", 0)
-    ) + 1
 
 def _reset_voice_state() -> None:
     for key in [
@@ -49,7 +178,6 @@ def render_voice_assistant_page() -> None:
     render_hero_banner(
         "Voice Assistant",
         "Press the microphone, speak naturally, and hear WaterBuddy reply out loud.",
-        badge="Voice",
     )
 
     def _safe_rerun() -> None:
@@ -105,25 +233,44 @@ def render_voice_assistant_page() -> None:
         unsafe_allow_html=True,
     )
 
-    voice_usage = _voice_daily_limit()
-    voice_limited = voice_usage >= 2
-
     st.info(
-        f"🚧 Voice Assistant is still in development. Shared AI uses today: {voice_usage}/2"
+        "🎙️ Voice Assistant is powered by OpenRouter. Ask WaterBuddy anything about hydration."
     )
 
-    if voice_limited:
-        st.warning("COME AGAIN TMRW UNTIL THEN DRINK WATER!")
+    st.html("""
+    <div style="
+        margin: 18px 0 22px;
+        padding: 20px 22px;
+        border-radius: 20px;
+        border: 1px solid rgba(56,189,248,.10);
+        background: linear-gradient(135deg, rgba(9,25,39,.78), rgba(5,14,23,.88));
+        box-shadow: 0 14px 38px rgba(0,0,0,.16);
+    ">
+        <div style="
+            color:#38bdf8;
+            font-size:10px;
+            font-weight:800;
+            letter-spacing:.16em;
+            text-transform:uppercase;
+            margin-bottom:7px;
+        ">How it works</div>
 
-    st.markdown(
-        """
-        <div style='margin-bottom: 1rem;'>
-            Speak your hydration question or ask for a quick encouragement.
-            WaterBuddy will transcribe your message, send it to the AI coach, and return spoken audio.
+        <div style="
+            color:#f5fbff;
+            font-size:16px;
+            font-weight:750;
+            margin-bottom:6px;
+        ">Speak naturally to WaterBuddy.</div>
+
+        <div style="
+            color:#718696;
+            font-size:13px;
+            line-height:1.6;
+        ">
+            Your voice is transcribed, sent to the AI coach, and returned as spoken audio.
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    </div>
+    """)
 
     # Weather integration removed — no city/units inputs shown.
     weather_city = None
@@ -134,8 +281,7 @@ def render_voice_assistant_page() -> None:
         audio_input = st.audio_input(
                 "Tap the microphone to record a question",
                 sample_rate=16000,
-                disabled=voice_limited,
-            )
+                )
     except Exception as exc:  # pragma: no cover - browser may not support audio input widget
         st.error(
             "Microphone input is unavailable in this browser. Please allow microphone access, try a supported browser, or refresh the page."
@@ -199,7 +345,12 @@ def render_voice_assistant_page() -> None:
                     st.session_state["voice_error"] = str(exc)
 
     if st.session_state.get("voice_transcription"):
-        st.markdown("### What I heard")
+        st.html("""
+        <div class="voice-section">
+            <div class="voice-section-label">Transcript</div>
+            <div class="voice-section-title">What I heard</div>
+        </div>
+        """)
         st.info(st.session_state["voice_transcription"])
 
     if st.session_state.get("voice_ready_for_ai") and not st.session_state.get("voice_response_text"):
@@ -211,8 +362,7 @@ def render_voice_assistant_page() -> None:
             remaining = int(retry_until - now)
             st.warning(f"AI service is rate-limited. Please try again in {remaining} seconds.")
         else:
-            if st.button("Send to WaterBuddy", disabled=voice_limited):
-                _use_voice_request()
+            if st.button("Send to WaterBuddy"):
                 ms = get_mascot_service()
                 ms.trigger_event('ai_thinking')
                 with st.spinner("Thinking..."):
@@ -264,11 +414,21 @@ def render_voice_assistant_page() -> None:
         st.error(st.session_state["voice_error"])
 
     if st.session_state.get("voice_response_text"):
-        st.markdown("### WaterBuddy says")
+        st.html("""
+        <div class="voice-section">
+            <div class="voice-section-label">AI response</div>
+            <div class="voice-section-title">WaterBuddy says</div>
+        </div>
+        """)
         st.success(st.session_state["voice_response_text"])
 
     if st.session_state.get("voice_audio_output_bytes"):
-        st.markdown("### Audio response")
+        st.html("""
+        <div class="voice-section">
+            <div class="voice-section-label">Voice playback</div>
+            <div class="voice-section-title">Audio response</div>
+        </div>
+        """)
         cols = st.columns([1, 1, 1, 4])
         replay = cols[0].button("Replay")
         reset = cols[1].button("Reset")

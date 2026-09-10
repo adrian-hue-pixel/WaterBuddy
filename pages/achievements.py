@@ -5,7 +5,7 @@ import streamlit as st
 
 from components.cards import render_badge, render_hero_banner
 from database.manager import get_recent_history
-from services.hydration import calculate_progress
+from services.hydration import calculate_progress, get_hydration_records
 from services.mascot_service import get_mascot_service
 
 
@@ -318,6 +318,15 @@ def render_achievements_page() -> None:
     history = _history()
     goal_ml = int(st.session_state.get("goal_ml", 2500))
     states = _achievement_states(history, goal_ml)
+    records = get_hydration_records()
+
+    st.subheader("🏅 Personal records")
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("🔥 Current streak", f"{records['current_streak']} days")
+    col2.metric("🏆 Best streak", f"{records['longest_streak']} days")
+    col3.metric("💧 Highest day", f"{records['highest_intake_ml']} ml")
+    col4.metric("🎯 Consistency", f"{records['consistency_percent']}%")
+    st.caption(f"{records['completed_days']} of {records['tracked_days']} tracked days reached your hydration goal.")
 
     _celebrate_new_unlocks(states)
     _render_popup()
@@ -335,4 +344,5 @@ def render_achievements_page() -> None:
             title if unlocked else f"{title} (locked)",
             detail if unlocked else "Keep going to unlock this achievement.",
             icon if unlocked else "lock",
+            locked=not unlocked,
         )

@@ -19,6 +19,47 @@ ICON_SVG: dict[str, str] = {
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" '
         'stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>'
     ),
+    "star": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>'
+    ),
+    "leaf": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<path d="M20.5 3.5C11 3.5 5 6.5 5 13c0 4 3 6.5 6.5 6.5C18 19.5 20.5 12 20.5 3.5z"/>'
+        '<path d="M4 21c3-5 6-8 12-11"/></svg>'
+    ),
+    "wave": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<path d="M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 5-4 7 0"/></svg>'
+    ),
+    "medal": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<circle cx="12" cy="14" r="5"/><path d="M9 9 7 3l5 3 5-3-2 6"/></svg>'
+    ),
+    "shield": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<path d="M12 3 20 6v5c0 5-3.3 8.5-8 10-4.7-1.5-8-5-8-10V6l8-3z"/></svg>'
+    ),
+    "crown": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<path d="m3 7 4 4 5-7 5 7 4-4-2 12H5L3 7z"/><path d="M5 19h14"/></svg>'
+    ),
+    "sun": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>'
+    ),
+    "moon": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5z"/></svg>'
+    ),
+    "rocket": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<path d="M14 4c3-1 5-1 6-1 0 1 0 3-1 6l-6 6-4-4 5-7z"/><path d="m9 15-3 3"/><path d="m6 12-3 1 3 3"/><circle cx="15.5" cy="7.5" r="1"/></svg>'
+    ),
+    "calendar": (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>'
+    ),
 }
 
 
@@ -52,14 +93,23 @@ def render_stat_card(title: str, value: str, accent: str = "primary", icon: str 
     )
 
 
-def render_badge(title: str, detail: str, icon: str = "sparkle") -> None:
+def render_badge(title: str, detail: str, icon: str = "sparkle", locked: bool = False) -> None:
+    icon_svg = _icon_html(icon)
+    state_class = " is-locked" if locked else " is-unlocked"
+    status_text = "Locked" if locked else "Unlocked"
+
     st.markdown(
         f"""
-        <div class="badge-card">
-            <div class="badge-icon">{_icon_html(icon)}</div>
-            <div>
+        <div class="badge-card{state_class}">
+            <div class="badge-icon">
+                {icon_svg}
+            </div>
+            <div class="badge-content">
                 <div class="badge-title">{title}</div>
                 <div class="badge-detail">{detail}</div>
+            </div>
+            <div class="badge-status">
+                {status_text}
             </div>
         </div>
         """,
