@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 import html
 import streamlit as st
 
@@ -23,13 +24,46 @@ def _get_state(
     last_logged: int = 0,
     celebrate: bool = False,
 ) -> str:
-    if celebrate:
+    intake = int(st.session_state.get("daily_intake_ml", 0))
+    goal = max(int(st.session_state.get("goal_ml", 1)), 1)
+    percent = int(round((intake / goal) * 100))
+
+    # 100% always gets the celebration animation.
+    if celebrate or percent >= 100:
         return "celebrate"
 
-    if last_logged > 0:
-        return "happy"
+    last_water_at = st.session_state.get("last_water_at")
 
-    return "idle"
+    # No water logged today.
+    if percent <= 0 and not last_water_at:
+        return "thirsty"
+
+    # Sad state after a long gap without drinking.
+    if last_water_at:
+        try:
+            last_time = datetime.fromisoformat(str(last_water_at))
+
+            if last_time.tzinfo is None:
+                last_time = last_time.replace(tzinfo=timezone.utc)
+
+            elapsed_hours = (
+                datetime.now(timezone.utc)
+                - last_time.astimezone(timezone.utc)
+            ).total_seconds() / 3600
+
+            if elapsed_hours >= 3:
+                return "sad"
+
+        except (TypeError, ValueError, OverflowError):
+            pass
+
+    if percent >= 50:
+        return "happy_50"
+
+    if percent >= 25:
+        return "happy_25"
+
+    return "thirsty"
 
 
 def _mascot_svg(state: str) -> str:
@@ -46,7 +80,7 @@ def _mascot_svg(state: str) -> str:
         />
     """
 
-    if state == "happy":
+    if state in ("happy_25", "happy_50"):
         mouth = """
             <path
                 d="M91 125 Q110 145 129 125"
@@ -65,6 +99,27 @@ def _mascot_svg(state: str) -> str:
                 stroke-width="4"
             />
         """
+    elif state == "sad":
+        mouth = """
+            <path
+                d="M91 140 Q110 122 129 140"
+                fill="none"
+                stroke="#062235"
+                stroke-width="5"
+                stroke-linecap="round"
+            />
+        """
+    elif state == "thirsty":
+        mouth = """
+            <path
+                d="M99 134 Q110 128 121 134"
+                fill="none"
+                stroke="#062235"
+                stroke-width="4"
+                stroke-linecap="round"
+            />
+        """
+
 
     return f"""
     <svg
@@ -417,6 +472,97 @@ def render_mascot(
         .wb-mascot-happy .wb-mascot-arm-right {{
             transform-origin: 165px 165px;
             animation: wb-wave 1s ease-in-out 2;
+        }}
+
+        /* Five hydration-based mascot states */
+        .wb-mascot-thirsty .wb-mascot-body {{
+            animation: wb-thirsty-pulse 2.2s ease-in-out infinite;
+        }}
+
+        .wb-mascot-thirsty .wb-mascot-arm-left,
+        .wb-mascot-thirsty .wb-mascot-arm-right {{
+            animation: wb-thirsty-arms 2.2s ease-in-out infinite;
+        }}
+
+        .wb-mascot-happy_25 .wb-mascot-body {{
+            animation: wb-recover-bounce 1.8s ease-in-out infinite;
+        }}
+
+        .wb-mascot-happy_25 .wb-mascot-arm-right {{
+            transform-origin: 165px 165px;
+            animation: wb-gentle-wave 2.2s ease-in-out infinite;
+        }}
+
+        .wb-mascot-happy_50 .wb-mascot-body {{
+            animation: wb-happy-bounce .9s ease-in-out infinite;
+        }}
+
+        .wb-mascot-happy_50 .wb-mascot-arm-left {{
+            transform-origin: 60px 165px;
+            animation: wb-happy-arm 1.4s ease-in-out infinite;
+        }}
+
+        .wb-mascot-happy_50 .wb-mascot-arm-right {{
+            transform-origin: 165px 165px;
+            animation: wb-happy-arm 1.4s ease-in-out .15s infinite;
+        }}
+
+        .wb-mascot-sad .wb-mascot-body {{
+            animation: wb-sad-breathe 3.2s ease-in-out infinite;
+        }}
+
+        .wb-mascot-sad .wb-mascot-arm-left,
+        .wb-mascot-sad .wb-mascot-arm-right {{
+            animation: wb-sad-arms 3.2s ease-in-out infinite;
+        }}
+
+        .wb-mascot-sad .wb-mascot-particles {{
+            opacity: .25;
+        }}
+
+        .wb-mascot-sad .wb-mascot-ring {{
+            opacity: .18;
+            animation: wb-sad-ring 3s ease-in-out infinite;
+        }}
+
+        @keyframes wb-thirsty-pulse {{
+            0%, 100% {{ transform: scale(1) translateY(0); }}
+            50% {{ transform: scale(.975) translateY(3px); }}
+        }}
+
+        @keyframes wb-thirsty-arms {{
+            0%, 100% {{ transform: translateY(0); }}
+            50% {{ transform: translateY(5px); }}
+        }}
+
+        @keyframes wb-recover-bounce {{
+            0%, 100% {{ transform: translateY(0); }}
+            50% {{ transform: translateY(-5px); }}
+        }}
+
+        @keyframes wb-gentle-wave {{
+            0%, 100% {{ transform: rotate(0deg); }}
+            50% {{ transform: rotate(-8deg); }}
+        }}
+
+        @keyframes wb-happy-arm {{
+            0%, 100% {{ transform: rotate(0deg); }}
+            50% {{ transform: rotate(9deg); }}
+        }}
+
+        @keyframes wb-sad-breathe {{
+            0%, 100% {{ transform: translateY(3px) scale(.985); }}
+            50% {{ transform: translateY(7px) scale(.97); }}
+        }}
+
+        @keyframes wb-sad-arms {{
+            0%, 100% {{ transform: rotate(0deg) translateY(2px); }}
+            50% {{ transform: rotate(5deg) translateY(7px); }}
+        }}
+
+        @keyframes wb-sad-ring {{
+            0%, 100% {{ transform: scaleX(.88); opacity: .12; }}
+            50% {{ transform: scaleX(.96); opacity: .22; }}
         }}
 
         .wb-mascot-static *,

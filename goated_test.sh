@@ -368,16 +368,16 @@ else
     fail "Mascot celebration state missing"
 fi
 
-if grep -q '"happy"' "$MASCOT"; then
-    pass "Mascot happy state exists"
+if grep -qE '"happy_25"|"happy_50"' "$MASCOT"; then
+    pass "Mascot happy states exist"
 else
-    fail "Mascot happy state missing"
+    fail "Mascot happy states missing"
 fi
 
-if grep -q '"idle"' "$MASCOT"; then
-    pass "Mascot idle state exists"
+if grep -q '"thirsty"' "$MASCOT"; then
+    pass "Mascot 0% state exists"
 else
-    fail "Mascot idle state missing"
+    fail "Mascot 0% state missing"
 fi
 
 if grep -q '<svg' "$MASCOT"; then
