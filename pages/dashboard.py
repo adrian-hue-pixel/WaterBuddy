@@ -25,6 +25,22 @@ from services.personalization import get_age_aesthetic
 
 
 def render_dashboard_page() -> None:
+    profile_name = st.session_state.get("profile_name", "").strip() or "Friend"
+
+    st.markdown(
+        f"""
+        <div style="
+            margin: 4px 0 18px 0;
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        ">
+            Welcome, {profile_name} 👋
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     render_hero_banner(
         "Your hydration rhythm",
         "A calm command center for progress, coaching, and steady momentum.",
@@ -106,6 +122,29 @@ def render_dashboard_page() -> None:
         )
         st.progress(percent / 100)
         st.caption(f"{percent}% of your {goal_ml} ml goal")
+
+        # Goal reached banner
+        if percent >= 100:
+            st.markdown(
+                """
+                <div style="
+                    margin: 18px 0 12px 0;
+                    padding: 18px 22px;
+                    border-radius: 18px;
+                    border: 1px solid rgba(34, 197, 94, 0.28);
+                    background: rgba(34, 197, 94, 0.08);
+                    text-align: center;
+                ">
+                    <div style="font-size: 1.35rem; font-weight: 800; letter-spacing: 0.02em;">
+                        🎉 TARGET REACHED!
+                    </div>
+                    <div style="margin-top: 6px; font-size: 0.98rem; opacity: 0.82;">
+                        You’ve reached today’s hydration goal. Keep sipping normally throughout the rest of your day.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
         render_mascot(
             snd_on=st.session_state.get("sound_on", True),
