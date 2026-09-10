@@ -22,8 +22,8 @@ def render_reminder_page() -> None:
 
     interval = st.selectbox(
         "Reminder interval",
-        [30, 45, 60, 90, 120],
-        index=[30, 45, 60, 90, 120].index(
+        [15, 30, 45, 60],
+        index=[15, 30, 45, 60].index(
             st.session_state.get("reminder_interval", 60)
         ),
         format_func=lambda x: f"Every {x} minutes",
