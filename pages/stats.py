@@ -17,11 +17,31 @@ def app():
     daily = df.groupby('date', as_index=False)['total_ml'].sum()
     daily = daily.rename(columns={'total_ml': 'total'})
 
-    chart = alt.Chart(daily).mark_line(point=True).encode(
-        x='date:T',
-        y='total:Q',
-        tooltip=['date:T', 'total:Q']
-    ).properties(width=700, height=300)
+    chart = (
+        alt.Chart(daily)
+        .mark_line(point=True)
+        .encode(
+            x=alt.X('date:T', title='Date'),
+            y=alt.Y(
+                'total:Q',
+                title='Intake (ml)',
+                axis=alt.Axis(
+                    format=',d',
+                    labelPadding=8,
+                    titlePadding=18,
+                    labelLimit=90,
+                    minExtent=70,
+                ),
+                scale=alt.Scale(zero=True),
+            ),
+            tooltip=[
+                alt.Tooltip('date:T', title='Date'),
+                alt.Tooltip('total:Q', title='Intake', format=',d'),
+            ],
+        )
+        .properties(width='container', height=300)
+        .configure_axis(labelFontSize=13, titleFontSize=13)
+    )
 
     st.altair_chart(chart, use_container_width=True)
     st.write('Summary')
