@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 import pytest
 
 from database import manager as db_manager
+from services import hydration as hydration_service
 from services.hydration import calculate_progress, get_age_goal, get_milestone_message, get_streak, reset_daily_intake, update_daily_intake
 
 
@@ -60,6 +61,63 @@ def test_get_streak_counts_recent_days(clear_session_state, isolated_db):
         day = (today - timedelta(days=offset)).strftime("%Y-%m-%d")
         db_manager.save_intake(day, 250, "quick")
     assert get_streak(7) >= 1
+
+
+def test_hydration_prediction_uses_hours_as_hours(clear_session_state, isolated_db, monkeypatch):
+    class FixedDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return cls(
+                date.today().year,
+                date.today().month,
+                date.today().day,
+                9,
+                30,
+            )
+
+    clear_session_state["goal_ml"] = 2500
+    monkeypatch.setattr(hydration_service, "datetime", FixedDateTime)
+
+    today = date.today().strftime("%Y-%m-%d")
+    db_manager.save_intake(today, 1200, "quick")
+
+    prediction = hydration_service.get_hydration_prediction()
+
+    assert prediction["pace_ml_per_hour"] == 480
+    assert prediction["projected_intake_ml"] == 7680
+
+
+def test_hydration_prediction_does_not_project_past_day_end(clear_session_state, isolated_db, monkeypatch):
+    class FixedDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return cls(
+                date.today().year,
+                date.today().month,
+                date.today().day,
+                23,
+                30,
+            )
+
+    clear_session_state["goal_ml"] = 2500
+    monkeypatch.setattr(hydration_service, "datetime", FixedDateTime)
+
+    today = date.today().strftime("%Y-%m-%d")
+    db_manager.save_intake(today, 3000, "quick")
+
+    prediction = hydration_service.get_hydration_prediction()
+
+    assert prediction["projected_intake_ml"] == 3000
+
+
+def test_get_streak_respects_requested_window(clear_session_state, isolated_db):
+    clear_session_state["goal_ml"] = 2500
+    today = date.today()
+    for offset in range(10):
+        day = (today - timedelta(days=offset)).strftime("%Y-%m-%d")
+        db_manager.save_intake(day, 250, "quick")
+
+    assert get_streak(7) == 7
 
 
 def test_hydration_data_isolation_across_users(tmp_path, monkeypatch):
