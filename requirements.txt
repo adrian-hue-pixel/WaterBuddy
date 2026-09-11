@@ -3,3 +3,4 @@ openai
 plotly
 python-dotenv
 gTTS
+SpeechRecognition>=3.10,<4
