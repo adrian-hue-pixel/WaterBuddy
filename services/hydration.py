@@ -182,20 +182,30 @@ def reset_daily_intake() -> tuple[int, int]:
 
 
 def get_streak(days: int = 7) -> int:
+    days = max(int(days), 0)
+    if days == 0:
+        return 0
+
     user_id = st.session_state.get("user_id")
-    history = get_recent_history(days=days + 14, user_id=user_id)
+    history = get_recent_history(days=days, user_id=user_id)
     if not history:
         return 0
-    seen_dates = {item.get("intake_date") for item in history if int(item.get("total_ml", 0)) > 0}
+
+    seen_dates = {
+        item.get("intake_date")
+        for item in history
+        if int(item.get("total_ml", 0)) > 0
+    }
     current = date.today()
     streak = 0
-    for _ in range(days + 14):
+    for _ in range(days):
         day_key = current.strftime("%Y-%m-%d")
         if day_key not in seen_dates:
             break
         streak += 1
         current -= timedelta(days=1)
     return streak
+
 
 class HydrationService:
     """Object-oriented interface for the hydration service."""
@@ -333,8 +343,6 @@ def get_hydration_records() -> dict:
 
     longest_streak = 0
     running = 0
-
-    cursor = today - timedelta(days=max(len(daily_totals), 1))
 
     if daily_totals:
         dates = sorted(
