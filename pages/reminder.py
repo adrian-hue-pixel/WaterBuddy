@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import streamlit as st
 
@@ -37,9 +37,12 @@ def render_reminder_page() -> None:
             try:
                 last_time = datetime.fromisoformat(
                     str(last_water).replace("Z", "+00:00")
-                ).replace(tzinfo=None)
-                next_time = last_time + timedelta(minutes=interval)
-                now = datetime.now()
+                )
+                if last_time.tzinfo is None:
+                    last_time = last_time.replace(tzinfo=timezone.utc)
+
+                next_time = last_time + timedelta(minutes=int(interval))
+                now = datetime.now(timezone.utc)
                 remaining = next_time - now
 
                 if remaining.total_seconds() > 0:
@@ -47,13 +50,14 @@ def render_reminder_page() -> None:
                     st.info(f"💧 Next hydration reminder in about {minutes} minutes.")
                 else:
                     st.warning("💧 Time for a hydration check-in!")
-            except (ValueError, TypeError):
+            except (ValueError, TypeError, OverflowError):
                 st.info("💧 Log a drink to start your reminder timer.")
         else:
             st.info("💧 Log your first drink to start the reminder timer.")
 
     if st.button("🔔 Save reminder settings", use_container_width=True):
-        st.session_state["reminders_enabled"] = enabled
-        st.session_state["reminder_interval"] = interval
+        # The checkbox/selectbox already own and update these session-state keys.
+        # Do not assign to them again after widget creation, or Streamlit raises
+        # StreamlitWidgetAlreadyInstantiatedError.
         st.success("Reminder settings saved.")
         st.rerun()
