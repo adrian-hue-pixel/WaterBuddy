@@ -286,6 +286,13 @@ def render_profile_page() -> None:
         )
 
     with goal_cols[1]:
+        st.html("""
+        <style>
+        div[data-testid="stNumberInput"] button {
+            display: none !important;
+        }
+        </style>
+        """)
         goal_ml = st.number_input(
             "Daily hydration goal (ml)",
             min_value=1000,
