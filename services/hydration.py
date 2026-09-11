@@ -245,14 +245,24 @@ def get_hydration_prediction() -> dict:
 
     start_hour = 7
     end_hour = 23
-    current_minutes = now.hour * 60 + now.minute
     start_minutes = start_hour * 60
+    end_minutes = end_hour * 60
+    current_minutes = now.hour * 60 + now.minute
 
-    elapsed_minutes = max(current_minutes - start_minutes, 1)
-    total_minutes = (end_hour - start_hour) * 60
+    elapsed_minutes = max(0, min(current_minutes, end_minutes) - start_minutes)
+    remaining_minutes = max(0, end_minutes - max(current_minutes, start_minutes))
 
-    pace_ml_per_hour = (intake / elapsed_minutes) * 60
-    projected_intake = int(round(pace_ml_per_hour * total_minutes))
+    if elapsed_minutes > 0:
+        pace_ml_per_hour = (intake / elapsed_minutes) * 60
+    else:
+        pace_ml_per_hour = 0
+
+    if elapsed_minutes > 0 and remaining_minutes > 0:
+        projected_intake = int(
+            round(intake + pace_ml_per_hour * (remaining_minutes / 60))
+        )
+    else:
+        projected_intake = int(intake)
 
     remaining = max(goal - intake, 0)
 
@@ -269,7 +279,7 @@ def get_hydration_prediction() -> dict:
         status = "Behind pace"
         status_icon = "🔵"
 
-    if pace_ml_per_hour > 0 and remaining > 0:
+    if pace_ml_per_hour > 0 and remaining > 0 and remaining_minutes > 0:
         hours_to_goal = remaining / pace_ml_per_hour
     else:
         hours_to_goal = None
