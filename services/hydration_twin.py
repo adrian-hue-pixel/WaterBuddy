@@ -32,12 +32,16 @@ def get_hydration_twin() -> dict:
         trajectory = "behind"
         confidence = 0.85
 
-    hours_remaining = max(0, 23 - now.hour)
+    end_of_day = now.replace(hour=23, minute=0, second=0, microsecond=0)
+    minutes_remaining = max(
+        0,
+        int((end_of_day - now).total_seconds() // 60),
+    )
 
     if remaining <= 0:
         required_pace = 0
-    elif hours_remaining > 0:
-        required_pace = round(remaining / hours_remaining)
+    elif minutes_remaining > 0:
+        required_pace = round(remaining / (minutes_remaining / 60))
     else:
         required_pace = remaining
 
@@ -61,6 +65,6 @@ def get_hydration_twin() -> dict:
         "projected_intake_ml": projected,
         "trajectory": trajectory,
         "confidence": confidence,
-        "hours_remaining": hours_remaining,
+        "hours_remaining": round(minutes_remaining / 60, 2),
         "recommendation": recommendation,
     }
