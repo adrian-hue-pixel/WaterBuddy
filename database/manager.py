@@ -107,11 +107,22 @@ def _verify_password(password: str, stored_hash: str) -> bool:
 
 
 def _ensure_legacy_user(connection: sqlite3.Connection) -> int | None:
-    existing = connection.execute("SELECT id FROM users WHERE username = ?", ("legacy_user",)).fetchone()
+    """Return the migration user without colliding with existing unique fields."""
+    existing = connection.execute(
+        """
+        SELECT id
+        FROM users
+        WHERE username = ? OR email = ?
+        LIMIT 1
+        """,
+        ("legacy_user", "legacy_user@waterbuddy.local"),
+    ).fetchone()
     if existing:
         return int(existing[0])
+
     if connection.execute("SELECT COUNT(*) FROM users").fetchone()[0] > 0:
         return None
+
     legacy_hash = _hash_password("legacy-user-migration")
     cursor = connection.execute(
         "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
