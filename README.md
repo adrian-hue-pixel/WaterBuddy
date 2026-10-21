@@ -237,6 +237,10 @@ Configuration names can vary between versions of the code. Check the relevant se
 - Speech and AI features require compatible configuration, internet access, and third-party availability.
 - Hydration needs vary by individual and circumstance. WaterBuddy's targets and AI responses are informational only and are not medical advice.
 
+## Testing
+
+WaterBuddy was reviewed with feedback from friends, family members, and teachers. Based on their suggestions, I made improvements and adjustments to the app to make the experience clearer, more useful, and more user-friendly.
+
 ## Credits and Acknowledgements
 
 **Name of student:** Adrian Rohith C  
