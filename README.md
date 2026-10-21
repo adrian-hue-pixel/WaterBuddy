@@ -24,6 +24,10 @@ WaterBuddy works by bringing a user’s hydration activity into one personalized
 
 View the WaterBuddy app presentation: [Open the Canva presentation](https://canva.link/u5wlg8uk0ysn2xv).
 
+## Live Demo
+
+Try the WaterBuddy live demo: [Open the live demo](https://canva.link/u5wlg8uk0ysn2xv).
+
 ## Overview
 
 WaterBuddy brings hydration tracking and habit-building tools together in one application. Users can create an account, complete a personal profile, record water intake, review progress, and explore supporting features such as an AI coach, voice assistant, achievements, and weather-aware hydration context.
