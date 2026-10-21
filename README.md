@@ -2,6 +2,10 @@
 
 WaterBuddy is a polished Streamlit hydration companion with a premium UI, guided goals, quick logging, analytics, AI coaching, and profile-based personalization.
 
+## How it works
+
+WaterBuddy is built with Python and Streamlit, with a modular structure that separates the app’s pages, reusable UI components, business logic, and data management. User accounts, profiles, and hydration logs are managed with SQLite; Plotly powers interactive analytics, while custom CSS provides the glassmorphism interface. Personalization and hydration-goal logic use profile and activity context, the AI coach and bottle-image analysis connect through the OpenAI-compatible SDK to OpenRouter, and weather-aware features retrieve conditions from OpenWeatherMap. Voice features use SpeechRecognition with Google’s speech-recognition service for transcription and gTTS for text-to-speech, while python-dotenv helps load local configuration. External API features require the relevant API keys and may offer limited fallback behavior when keys or services are unavailable.
+
 ## Run locally
 
 ```bash
