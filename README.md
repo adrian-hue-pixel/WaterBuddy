@@ -11,11 +11,12 @@ WaterBuddy works by bringing a user’s hydration activity into one personalized
 - [Overview](#overview)
 - [Features](#features)
 - [How It Works](#how-it-works)
+- [Application Architecture](#application-architecture)
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
-- [Privacy and Limitations](#privacy-and-limitations)
+- [Privacy, Security, and Limitations](#privacy-security-and-limitations)
 - [Credits and Acknowledgements](#credits-and-acknowledgements)
 - [Deployment Notes](#deployment-notes)
 
@@ -76,6 +77,43 @@ AI-generated responses and image analysis may be inaccurate. Treat them as gener
 ## How It Works
 
 WaterBuddy is written in Python and uses Streamlit for its application interface and navigation. The pages in `pages/` provide the main user-facing tools, while `components/` contains reusable interface elements and `services/` holds hydration, analytics, personalization, AI, weather, and speech-related logic. SQLite stores application data locally, and Plotly renders interactive charts. Custom CSS defines the visual theme. The OpenAI Python SDK is used as an OpenAI-compatible client for the configured OpenRouter model service; OpenWeatherMap supplies weather data, SpeechRecognition provides speech transcription integration, and gTTS provides text-to-speech. API-dependent features require suitable credentials and network access.
+
+## Application Architecture
+
+WaterBuddy follows a modular, page-and-service architecture. Streamlit provides the presentation layer, page modules coordinate user interactions, service modules contain feature logic, and the database layer handles persistent records.
+
+```text
+User
+  │
+  ▼
+Streamlit UI (app.py and pages/)
+  │
+  ├── Reusable interface (components/ and styles/)
+  │
+  ▼
+Core navigation, configuration, and session management (core/)
+  │
+  ▼
+Feature services (services/)
+  ├── Hydration, goals, personalization, and analytics
+  ├── AI coaching and image-based analysis ──► OpenRouter / configured model
+  ├── Weather context ───────────────────────► OpenWeatherMap
+  └── Speech input and spoken output ─────────► SpeechRecognition / gTTS
+  │
+  ▼
+Data access and local persistence (database/)
+  │
+  ▼
+SQLite database
+```
+
+- **Presentation layer:** `app.py`, `pages/`, `components/`, and `styles/` provide navigation, screens, reusable UI, and visual design.
+- **Application/core layer:** `core/` organizes configuration, navigation, themes, and session-related behavior.
+- **Service layer:** `services/` separates hydration calculations, goal support, analytics, personalization, and external integrations from page layout.
+- **Data layer:** `database/` manages SQLite-backed application records.
+- **Integration layer:** AI, weather, speech recognition, and text-to-speech features use external services or libraries when configured.
+
+This diagram describes the intended module responsibilities at a high level; exact call paths and data handling depend on the current implementation in the repository.
 
 ## Technology Stack
 
@@ -177,18 +215,36 @@ Common configuration variables used by the integrations include:
 
 Configuration names can vary between versions of the code. Check the relevant service module before deploying, and ensure the local `.env.example` matches the variables expected by the current source code. Features that do not require external APIs may still work without these keys.
 
-## Privacy and Limitations
+## Privacy, Security, and Limitations
 
-- The project uses SQLite for local application data. Review the database configuration and deployment environment before hosting real user data.
-- API-backed features send the information required for a request to the relevant third-party service. Avoid submitting sensitive personal information.
-- Voice recognition and AI responses depend on third-party services, availability, and their respective terms and privacy policies.
-- Weather results depend on the configured provider and the availability and accuracy of its data.
-- Hydration needs vary by individual and circumstance. WaterBuddy's targets and AI responses are informational only and should not be treated as medical advice.
-- Before deploying publicly, review authentication, password handling, session persistence, secrets management, database access, and production security requirements.
+### Data and privacy
+- **Local storage:** SQLite is used for application records. The exact data stored depends on the enabled features and current implementation.
+- **Third-party processing:** AI prompts and bottle images, speech sent for recognition, and weather queries may be transmitted to external providers when those features are used. Review each provider's privacy policy and terms before use.
+- **Data minimization:** Avoid entering passwords, financial information, precise personal details, or other sensitive information into AI prompts or image-scanning features.
+- **Deployment matters:** Local development and public hosting have different privacy implications. A hosted app may make data accessible to the hosting operator or deployment environment.
+- **Retention and deletion:** Check the database and service code to understand what is saved, how long it remains, and how a user can remove it. Do not assume data is automatically deleted.
+
+### Security considerations
+- **Secrets management:** Keep API keys and credentials in local environment variables or the hosting platform's secrets manager. Never commit real secrets to Git, include them in screenshots, or expose them in client-visible output.
+- **Authentication review:** Before real users rely on the app, verify password hashing, login validation, session handling, access controls, and protections against unauthorized account or database access in the actual source code.
+- **Database protection:** SQLite is local storage, not a complete production security system. Protect the database file and host filesystem, restrict access, and establish appropriate backup and deletion procedures.
+- **External API boundaries:** Send only the data needed for each request. Use HTTPS endpoints, check API error handling, and avoid logging tokens, passwords, prompts, or other sensitive content unnecessarily.
+- **Production readiness:** Before public deployment, review dependency updates, input validation, exception handling, rate limits, authorization, secure configuration, and the hosting platform's filesystem persistence.
+- **No security certification claim:** These notes describe recommended safeguards, not a guarantee that the current app has passed a security audit or penetration test. Verify each control in the implementation before describing it as implemented.
+
+### Functional and health limitations
+- AI-generated responses and image analysis can be inaccurate, and weather results depend on the provider.
+- Speech and AI features require compatible configuration, internet access, and third-party availability.
+- Hydration needs vary by individual and circumstance. WaterBuddy's targets and AI responses are informational only and are not medical advice.
 
 ## Credits and Acknowledgements
 
-WaterBuddy is an independent project assembled using the open-source libraries and external services listed below. Each project and provider retains ownership of its own software, trademarks, documentation, and services. Please consult each linked project for its current license, usage terms, and attribution requirements.
+**Name of student:** Adrian Rohith C  
+**Reg. No.:** 1000528  
+**Mentor:** Syed Ali Beema S  
+**Name of the school:** Jain Vidyalaya
+
+WaterBuddy is an independent educational project assembled using the open-source libraries and external services listed below. Each project and provider retains ownership of its own software, trademarks, documentation, and services. Please consult each linked project for its current license, usage terms, and attribution requirements.
 
 - **Python** — programming language: [python.org](https://www.python.org/)
 - **Streamlit** — application framework: [streamlit.io](https://streamlit.io/)
