@@ -176,13 +176,6 @@ def render_auth_page() -> None:
                     st.session_state["authenticated"] = True
                     st.session_state["user_id"] = user["id"]
                     st.session_state["username"] = user["username"]
-                    # Remember this user so refreshes don't sign them out (lazy import)
-                    try:
-                        from database.manager import set_remembered_user
-
-                        set_remembered_user(user["id"])
-                    except Exception:
-                        pass
                     st.session_state["page_nav"] = "Dashboard"
                     st.success(f"Welcome back, {user['username']}!")
                     st.rerun_func()
@@ -223,13 +216,6 @@ def render_auth_page() -> None:
                         st.session_state["authenticated"] = True
                         st.session_state["user_id"] = user["id"]
                         st.session_state["username"] = user["username"]
-                        # Remember the new user and send them to the Profile page for personalization
-                        try:
-                            from database.manager import set_remembered_user
-
-                            set_remembered_user(user["id"])
-                        except Exception:
-                            pass
                         st.session_state["page_nav"] = "Profile"
                         # Mark profile as incomplete so we restrict navigation until they save
                         st.session_state["profile_complete"] = False
@@ -243,23 +229,6 @@ def main() -> None:
     st.set_page_config(page_title="WaterBuddy", page_icon="💧", layout="wide")
     initialize_db()
     ensure_session_state()
-
-    # Auto-rehydrate a remembered user (development convenience).
-    if not st.session_state.get("authenticated", False):
-        try:
-            # Import lazily to avoid import-time cycles or partially-initialized modules
-            from database.manager import get_remembered_user, get_user_by_id
-
-            remembered = get_remembered_user()
-            if remembered is not None:
-                user = get_user_by_id(remembered)
-                if user is not None:
-                    st.session_state["authenticated"] = True
-                    st.session_state["user_id"] = user["id"]
-                    st.session_state["username"] = user["username"]
-        except Exception:
-            # Best-effort; continue without remembered user
-            pass
 
     # Theme validation is handled in core.theme now; load persisted user preferences
     # so they apply before any sidebar widgets are created.
@@ -425,12 +394,6 @@ def main() -> None:
                 "sound_on",
             ]:
                 st.session_state.pop(key, None)
-            try:
-                from database.manager import set_remembered_user
-
-                set_remembered_user(None)
-            except Exception:
-                pass
             st.rerun_func()
         st.markdown("---")
         st.caption("Daily rhythm")
