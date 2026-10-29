@@ -1,5 +1,31 @@
 # WaterBuddy 💧
 
+<div align="center">
+
+  <img src="assets/banner.svg" alt="WaterBuddy – a personalized hydration companion" width="100%">
+
+  <p>
+    <img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" alt="Python">
+    <img src="https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit">
+    <img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite">
+    <img src="https://img.shields.io/badge/Plotly-3F4F75?logo=plotly&logoColor=white" alt="Plotly">
+    <img src="https://img.shields.io/badge/OpenRouter-AI-6366F1" alt="OpenRouter">
+  </p>
+
+  <p>
+    <a href="https://canva.link/u5wlg8uk0ysn2xv"><b>🌐 Live Demo</b></a> &nbsp;•&nbsp;
+    <a href="https://canva.link/u5wlg8uk0ysn2xv"><b>🎞️ Presentation</b></a> &nbsp;•&nbsp;
+    <a href="#getting-started"><b>🚀 Get Started</b></a> &nbsp;•&nbsp;
+    <a href="#features"><b>✨ Features</b></a>
+  </p>
+
+  <sub>Track intake · Hit your goals · Chat with an AI coach · Stay hydrated 💧</sub>
+
+</div>
+
+---
+
+
 **A personalized hydration companion built with Python and Streamlit.**
 
 WaterBuddy works by bringing a user’s hydration activity into one personalized workflow: users register or sign in, set up their profile, and log water intake through the tracking interface; the app stores relevant profile and hydration records in SQLite, updates progress against the user’s daily goal, and uses its hydration and goal-optimization services to calculate progress and support personalization. Dashboard and analytics pages turn recorded intake into visual summaries with Plotly, while achievements, daily tasks, and reminders help users maintain consistent habits. For additional support, the AI coach and bottle-image scanning features send supported prompts or images to the configured AI service through the OpenAI-compatible client and OpenRouter; weather-aware features retrieve conditions from OpenWeatherMap, and voice features use SpeechRecognition for speech input and gTTS for spoken output. Streamlit powers the interactive application, reusable components organize the interface, and custom CSS provides its visual styling; features that rely on external services require internet access and correctly configured API credentials.
