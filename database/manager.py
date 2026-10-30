@@ -107,29 +107,53 @@ def _verify_password(password: str, stored_hash: str) -> bool:
 
 
 def _ensure_legacy_user(connection: sqlite3.Connection) -> int | None:
-    """Return the migration user without colliding with existing unique fields."""
+    """Find or safely create the migration user without crashing on duplicates."""
+    legacy_username = "legacy_user"
+    legacy_email = "legacy_user@waterbuddy.local"
+
+    # Match case-insensitively because existing databases may have NOCASE
+    # collations or differently-cased legacy values.
     existing = connection.execute(
         """
         SELECT id
         FROM users
-        WHERE username = ? OR email = ?
+        WHERE LOWER(TRIM(username)) = LOWER(?)
+           OR LOWER(TRIM(email)) = LOWER(?)
         LIMIT 1
         """,
-        ("legacy_user", "legacy_user@waterbuddy.local"),
+        (legacy_username, legacy_email),
     ).fetchone()
     if existing:
         return int(existing[0])
 
+    # Do not create a synthetic account when real accounts already exist.
     if connection.execute("SELECT COUNT(*) FROM users").fetchone()[0] > 0:
         return None
 
     legacy_hash = _hash_password("legacy-user-migration")
-    cursor = connection.execute(
-        "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-        ("legacy_user", "legacy_user@waterbuddy.local", legacy_hash),
+
+    # OR IGNORE makes startup resilient to a concurrent initializer or any
+    # unique-index conflict. Re-query afterward rather than assuming insertion.
+    connection.execute(
+        """
+        INSERT OR IGNORE INTO users (username, email, password_hash)
+        VALUES (?, ?, ?)
+        """,
+        (legacy_username, legacy_email, legacy_hash),
     )
     connection.commit()
-    return int(cursor.lastrowid)
+
+    existing = connection.execute(
+        """
+        SELECT id
+        FROM users
+        WHERE LOWER(TRIM(username)) = LOWER(?)
+           OR LOWER(TRIM(email)) = LOWER(?)
+        LIMIT 1
+        """,
+        (legacy_username, legacy_email),
+    ).fetchone()
+    return int(existing[0]) if existing else None
 
 
 def initialize_db(db_path: str | Path | None = None) -> None:
