@@ -13,7 +13,7 @@
   </p>
 
   <p>
-    <a href="https://canva.link/u5wlg8uk0ysn2xv"><b>🌐 Live Demo</b></a> &nbsp;•&nbsp;
+    <a href="https://waterbuddyhydration.streamlit.app"><b>🌐 Live Demo</b></a> &nbsp;•&nbsp;
     <a href="https://canva.link/u5wlg8uk0ysn2xv"><b>🎞️ Presentation</b></a> &nbsp;•&nbsp;
     <a href="#getting-started"><b>🚀 Get Started</b></a> &nbsp;•&nbsp;
     <a href="#features"><b>✨ Features</b></a>
