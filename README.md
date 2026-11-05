@@ -52,7 +52,7 @@ View the WaterBuddy app presentation: [Open the Canva presentation](https://canv
 
 ## Live Demo
 
-Try the WaterBuddy live demo: [Open the live demo](https://canva.link/u5wlg8uk0ysn2xv).
+Try the WaterBuddy live demo: [Open the live demo](https://waterbuddyhydration.streamlit.app).
 
 ## Overview
 
